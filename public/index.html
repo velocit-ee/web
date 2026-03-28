@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>velocit.ee — community infrastructure, built to last</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0b0e09;--surface:#111510;--surface2:#171d15;--border:#232d1f;
+  --green:#5a9e6a;--green-hi:#7dc48a;--brown:#9b7a4e;--brown-hi:#c4a06a;
+  --cream:#d4ccb4;--text:#b8c4a8;--muted:#5e7055;--dim:#3a4a34;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:1.6;overflow-x:hidden;}
+.wrap{max-width:860px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,14,9,0.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0.9rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{font-size:1.05rem;font-weight:600;color:var(--cream);text-decoration:none;letter-spacing:-0.02em;}
+.nav-brand .tld{color:var(--green-hi);}
+.nav-links{display:flex;gap:2rem;align-items:center;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.8rem;transition:color 0.2s;}
+.nav-links a:hover{color:var(--text);}
+.btn-nav{color:var(--bg)!important;background:var(--green);padding:0.4rem 1rem;font-family:inherit;font-size:0.8rem!important;border:none;cursor:pointer;transition:background 0.2s;}
+.btn-nav:hover{background:var(--green-hi)!important;}
+section{position:relative;z-index:1;padding:5rem 0;}
+#hero{min-height:100vh;display:flex;align-items:center;padding:7rem 0 4rem;}
+.hero-label{color:var(--muted);font-size:0.72rem;letter-spacing:0.1em;margin-bottom:1.5rem;}
+.hero-label::before{content:'# ';color:var(--dim);}
+h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(1.6rem,4vw,2.5rem);font-weight:600;color:var(--cream);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.5rem;}
+h1 .hl{color:var(--green-hi);}
+h1 .hl2{color:var(--brown-hi);}
+.hero-sub{font-family:'IBM Plex Sans',sans-serif;font-size:0.95rem;font-weight:300;color:var(--muted);max-width:500px;line-height:1.75;margin-bottom:2.5rem;}
+.hero-sub strong{color:var(--text);font-weight:400;}
+.wl-wrap{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;}
+.wl-wrap input{background:var(--surface);border:1px solid var(--border);color:var(--cream);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;padding:0.6rem 1rem;outline:none;width:260px;transition:border-color 0.2s;}
+.wl-wrap input::placeholder{color:var(--dim);}
+.wl-wrap input:focus{border-color:var(--green);}
+.btn-primary{background:var(--green);color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;font-weight:600;padding:0.6rem 1.25rem;border:none;cursor:pointer;white-space:nowrap;transition:background 0.2s;}
+.btn-primary:hover{background:var(--green-hi);}
+.wl-note{color:var(--dim);font-size:0.7rem;}
+.wl-note::before{content:'> ';}
+.form-ok{display:none;color:var(--green-hi);font-size:0.78rem;margin-top:0.5rem;}
+.form-ok::before{content:'✓  ';}
+.stats{display:flex;gap:3rem;flex-wrap:wrap;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);}
+.stat-val{font-size:1.5rem;font-weight:600;color:var(--cream);letter-spacing:-0.04em;line-height:1;}
+.stat-val em{font-style:normal;color:var(--green-hi);}
+.stat-lbl{color:var(--muted);font-size:0.68rem;margin-top:0.3rem;}
+.sec-label{color:var(--brown);font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:1.25rem;}
+.sec-label::before{content:'## ';color:var(--dim);}
+h2{font-size:clamp(1.2rem,3vw,1.75rem);font-weight:600;color:var(--cream);letter-spacing:-0.025em;line-height:1.2;margin-bottom:2.5rem;max-width:620px;}
+#problem{border-top:1px solid var(--border);}
+.prob-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);}
+.prob-item{display:grid;grid-template-columns:2.5rem 1fr;gap:1rem;background:var(--surface);padding:1.25rem;align-items:start;transition:background 0.15s;}
+.prob-item:hover{background:var(--surface2);}
+.prob-idx{color:var(--dim);font-size:0.7rem;padding-top:0.1rem;}
+.prob-item h3{font-size:0.875rem;font-weight:600;color:var(--cream);margin-bottom:0.35rem;}
+.prob-item p{font-family:'IBM Plex Sans',sans-serif;font-size:0.83rem;font-weight:300;color:var(--muted);line-height:1.65;}
+#solution{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.sol-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:3.5rem;align-items:start;}
+@media(max-width:680px){.sol-grid{grid-template-columns:1fr;}}
+.sol-points{display:flex;flex-direction:column;gap:1.1rem;margin-top:0.5rem;}
+.sol-pt{display:flex;gap:0.75rem;align-items:flex-start;}
+.sol-pt::before{content:'→';color:var(--green);flex-shrink:0;margin-top:1px;}
+.sol-pt p{font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;font-weight:300;color:var(--muted);line-height:1.7;}
+.sol-pt strong{color:var(--text);font-weight:500;}
+.term{background:#080b07;border:1px solid var(--border);font-size:0.74rem;line-height:1.9;}
+.term-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.55rem 1rem;display:flex;gap:0.4rem;align-items:center;}
+.d{width:10px;height:10px;border-radius:50%;}
+.d1{background:#553333;}.d2{background:#554433;}.d3{background:#2a4a2a;}
+.term-title{margin:0 auto;color:var(--dim);font-size:0.66rem;transform:translateX(-15px);}
+.term-body{padding:1.25rem 1.5rem;}
+.tc{color:var(--dim);}.tp{color:var(--brown);}.tcm{color:var(--green);}.to{color:var(--muted);}.ts-ok{color:#7dc48a;}
+.cursor{display:inline-block;width:7px;height:0.85em;background:var(--green);vertical-align:text-bottom;animation:blink 1.1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+#pricing{border-top:1px solid var(--border);}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);}
+.tier{background:var(--surface);padding:1.6rem 1.4rem;position:relative;}
+.tier.hi{background:var(--surface2);}
+.tier-flag{position:absolute;top:0;right:1rem;background:var(--green);color:var(--bg);font-size:0.6rem;font-weight:600;padding:0.15rem 0.5rem;letter-spacing:0.06em;}
+.tier-name{color:var(--muted);font-size:0.65rem;letter-spacing:0.08em;margin-bottom:0.75rem;}
+.tier-price{font-size:1.45rem;font-weight:600;color:var(--cream);letter-spacing:-0.04em;margin-bottom:1.1rem;line-height:1;}
+.tier-price small{font-size:0.72rem;font-weight:300;color:var(--muted);}
+.tier-feats{list-style:none;display:flex;flex-direction:column;gap:0.4rem;}
+.tier-feats li{font-size:0.72rem;color:var(--muted);font-family:'IBM Plex Sans',sans-serif;font-weight:300;display:flex;align-items:flex-start;gap:0.45rem;}
+.tier-feats li::before{content:'+';color:var(--green);flex-shrink:0;font-family:monospace;}
+.tier-note{margin-top:0.9rem;font-size:0.65rem;color:var(--green-hi);}
+#roadmap{background:var(--surface);border-top:1px solid var(--border);}
+.rmap{margin-top:1.5rem;position:relative;}
+.rmap::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--green),var(--border) 65%);}
+.rmap-item{display:flex;gap:2rem;padding-bottom:2.25rem;align-items:flex-start;}
+.rmap-node{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:600;flex-shrink:0;position:relative;z-index:1;border:1px solid var(--border);background:var(--surface);color:var(--muted);}
+.rmap-node.now{background:var(--green);color:var(--bg);border-color:var(--green);}
+.rmap-content h3{font-size:0.875rem;font-weight:600;color:var(--cream);margin-bottom:0.3rem;}
+.rmap-content p{font-family:'IBM Plex Sans',sans-serif;font-size:0.82rem;font-weight:300;color:var(--muted);line-height:1.65;max-width:520px;}
+#cta{border-top:1px solid var(--border);text-align:center;}
+#cta h2{margin:0 auto 1rem;}
+#cta p{color:var(--muted);font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:0.875rem;max-width:440px;margin:0 auto 2rem;line-height:1.75;}
+.cta-form{display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;}
+.cta-form input{background:var(--surface);border:1px solid var(--border);color:var(--cream);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;padding:0.6rem 1rem;outline:none;width:260px;transition:border-color 0.2s;}
+.cta-form input:focus{border-color:var(--green);}
+.cta-form input::placeholder{color:var(--dim);}
+footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
+.foot-brand{font-size:0.85rem;font-weight:600;color:var(--cream);}
+.foot-brand .tld{color:var(--green-hi);}
+.foot-links{display:flex;gap:1.5rem;}
+.foot-links a{color:var(--muted);text-decoration:none;font-size:0.72rem;transition:color 0.2s;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{color:var(--dim);font-size:0.65rem;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp 0.65s ease both;}
+.d1s{animation-delay:0.1s;}.d2s{animation-delay:0.22s;}.d3s{animation-delay:0.34s;}.d4s{animation-delay:0.46s;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand">velocit<span class="tld">.ee</span></a>
+  <div class="nav-links">
+    <a href="#solution">how it works</a>
+    <a href="#pricing">pricing</a>
+    <a href="https://github.com/Wiesbaden-Cyber/Stemlab-25-26" target="_blank">github</a>
+    <button class="btn-nav" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">join waitlist</button>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-label fu">open source infrastructure platform</div>
+    <h1 class="fu d1s">networks that<br/><span class="hl">survive anyone</span><br/><span class="hl2">leaving.</span></h1>
+    <p class="hero-sub fu d2s">Most small orgs run on networks <strong>one person built and only they understand.</strong> velocit.ee deploys self-documenting, self-healing infrastructure — clone a repo, run one command, everything rebuilds from bare metal.</p>
+    <div class="fu d3s">
+      <div class="wl-wrap">
+        <input type="email" id="hero-email" placeholder="you@example.com"/>
+        <button class="btn-primary" onclick="sub('hero-email','hero-ok')">join waitlist</button>
+      </div>
+      <div class="form-ok" id="hero-ok">you're on the list.</div>
+      <div id="hero-err" style="display:none;color:#c06a4a;font-size:0.72rem;font-family:'IBM Plex Mono',monospace;margin-top:0.35rem;"></div>
+      <div class="wl-note">self-hosted is free forever. no card, ever.</div>
+    </div>
+    <div class="stats fu d4s">
+      <div><div class="stat-val">1<em> cmd</em></div><div class="stat-lbl">full rebuild from bare metal</div></div>
+      <div><div class="stat-val">0<em> lock-in</em></div><div class="stat-lbl">your configs, your repo</div></div>
+      <div><div class="stat-val">100<em>%</em></div><div class="stat-lbl">open source core, always</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="sec-label">the problem</div>
+    <h2>small orgs deserve solid infrastructure. they just can't afford to maintain it.</h2>
+    <div class="prob-list">
+      <div class="prob-item">
+        <div class="prob-idx">[01]</div>
+        <div><h3>bus factor of one</h3><p>One person built it, understands it, maintains it. When they leave — graduation, another job, retirement — the knowledge walks out with them.</p></div>
+      </div>
+      <div class="prob-item">
+        <div class="prob-idx">[02]</div>
+        <div><h3>enterprise tools, enterprise price</h3><p>The platforms that exist were built for Comcast, not a school or community ISP. Small orgs don't have $50k/yr infrastructure budgets.</p></div>
+      </div>
+      <div class="prob-item">
+        <div class="prob-idx">[03]</div>
+        <div><h3>fragile by default</h3><p>Manually configured systems have no memory. When hardware dies or a rebuild is needed, there's no source of truth — just undocumented configs and someone's fading memory.</p></div>
+      </div>
+      <div class="prob-item">
+        <div class="prob-idx">[04]</div>
+        <div><h3>connectivity deserts</h3><p>Community networks and rural ISPs need real tooling to scale affordable internet access. The software to run them barely exists at a price they can afford.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="wrap">
+    <div class="sol-grid">
+      <div>
+        <div class="sec-label">how it works</div>
+        <h2>describe your hardware. get your config. run one command.</h2>
+        <div class="sol-points">
+          <div class="sol-pt"><p><strong>AI-assisted setup</strong> — answer questions about your gear and use case. velocit.ee generates a complete deployment config. no prior infra expertise required.</p></div>
+          <div class="sol-pt"><p><strong>infrastructure as code</strong> — everything lives in a git repo. ansible, terraform, maas. clone it anywhere, rebuild from scratch, any time.</p></div>
+          <div class="sol-pt"><p><strong>self-documenting by design</strong> — every service, VLAN, and config change is tracked and explained. a new admin with zero prior context can pick up exactly where the last one left off.</p></div>
+          <div class="sol-pt"><p><strong>self-healing</strong> — automatic updates, alerting, and recovery runbooks baked in from the start. not bolted on later.</p></div>
+        </div>
+      </div>
+      <div class="term">
+        <div class="term-bar">
+          <div class="d d1"></div><div class="d d2"></div><div class="d d3"></div>
+          <div class="term-title">velocit.ee deploy</div>
+        </div>
+        <div class="term-body">
+<div class="tc"># clone your org's infra repo</div>
+<div><span class="tp">$</span> <span class="tcm">git clone git@github.com/your-org/infra</span></div>
+<div><span class="tp">$</span> <span class="tcm">cd infra && ./deploy.sh</span></div>
+<br/>
+<div class="to">→ reading velocitee.yml...</div>
+<div class="to">→ detected: proxmox + truenas + cisco</div>
+<div class="to">→ provisioning bare metal (maas)...</div>
+<div class="to">→ creating vms (terraform)...</div>
+<div class="to">→ configuring services (ansible)...</div>
+<div class="to">&nbsp; gitlab, wazuh, netbox, vaultwarden,</div>
+<div class="to">&nbsp; freeradius, ollama, tailscale...</div>
+<br/>
+<div class="ts-ok">✓ deployed in 14m 22s</div>
+<div class="ts-ok">✓ documentation generated</div>
+<div class="ts-ok">✓ monitoring active</div>
+<br/>
+<div><span class="tp">$</span> <span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-label">pricing</div>
+    <h2>the core is free. always.</h2>
+    <p style="font-family:'IBM Plex Sans',sans-serif;font-weight:300;color:var(--muted);font-size:0.85rem;max-width:540px;margin-bottom:2rem;line-height:1.75;">we're not here to extract money from schools and nonprofits. the automation engine is open source and self-hostable forever. we charge for the hosted platform that makes it accessible to non-technical orgs.</p>
+    <div class="tiers">
+      <div class="tier">
+        <div class="tier-name">SELF-HOSTED</div>
+        <div class="tier-price">free <small>/ forever</small></div>
+        <ul class="tier-feats">
+          <li>full open source core</li>
+          <li>ansible + terraform + maas</li>
+          <li>community config library</li>
+          <li>github-based deploy</li>
+          <li>community support</li>
+        </ul>
+      </div>
+      <div class="tier hi">
+        <div class="tier-flag">RECOMMENDED</div>
+        <div class="tier-name">COMMUNITY ORG</div>
+        <div class="tier-price">$29 <small>/ mo</small></div>
+        <ul class="tier-feats">
+          <li>hosted AI config generator</li>
+          <li>web deploy dashboard</li>
+          <li>monitoring + alerting UI</li>
+          <li>automatic updates</li>
+        </ul>
+        <div class="tier-note">schools &amp; nonprofits: free</div>
+      </div>
+      <div class="tier">
+        <div class="tier-name">COMMUNITY ISP</div>
+        <div class="tier-price">$99 <small>/ mo</small></div>
+        <ul class="tier-feats">
+          <li>everything in community org</li>
+          <li>multi-site management</li>
+          <li>billing + member tools</li>
+          <li>bandwidth + QoS visibility</li>
+          <li>email support</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="tier-name">MUNICIPAL / ENTERPRISE</div>
+        <div class="tier-price">custom</div>
+        <ul class="tier-feats">
+          <li>everything in ISP tier</li>
+          <li>SLA guarantees</li>
+          <li>dedicated support</li>
+          <li>custom integrations</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <div class="sec-label">the long game</div>
+    <h2>software first. infrastructure second. connectivity for everyone, eventually.</h2>
+    <div class="rmap">
+      <div class="rmap-item">
+        <div class="rmap-node now">01</div>
+        <div class="rmap-content"><h3>infrastructure SaaS — now</h3><p>Open source deployment automation for community networks, schools, and small orgs. Build the product, prove the model, grow the community.</p></div>
+      </div>
+      <div class="rmap-item">
+        <div class="rmap-node">02</div>
+        <div class="rmap-content"><h3>community ISP tooling</h3><p>Back-office platform for community-run internet providers — billing, member management, network visibility. built for people, not Comcast.</p></div>
+      </div>
+      <div class="rmap-item">
+        <div class="rmap-node">03</div>
+        <div class="rmap-content"><h3>regional ISP infrastructure</h3><p>Use stage 1+2 cash flow and credibility to build physical infrastructure in underserved areas. internet as a utility, not a luxury.</p></div>
+      </div>
+      <div class="rmap-item">
+        <div class="rmap-node">04</div>
+        <div class="rmap-content"><h3>aerospace + satellite connectivity</h3><p>Close the loop. vertically integrated connectivity — from deployment software all the way to low-earth-orbit infrastructure.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="wrap">
+    <div class="sec-label">early access</div>
+    <h2>be first when we ship.</h2>
+    <p>building in public. join the waitlist for early access — no cost until you're ready.</p>
+    <div class="cta-form">
+      <input type="email" id="cta-email" placeholder="you@example.com"/>
+      <button class="btn-primary" onclick="sub('cta-email','cta-ok')">join waitlist</button>
+    </div>
+    <div class="form-ok" id="cta-ok" style="margin-top:0.75rem;text-align:center;">you're on the list.</div>
+    <div id="cta-err" style="display:none;margin-top:0.5rem;text-align:center;color:#c06a4a;font-size:0.75rem;font-family:'IBM Plex Mono',monospace;"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-brand">velocit<span class="tld">.ee</span></div>
+  <div class="foot-links">
+    <a href="https://github.com/Wiesbaden-Cyber/Stemlab-25-26" target="_blank">github</a>
+    <a href="mailto:hello@velocit.ee">hello@velocit.ee</a>
+  </div>
+  <div class="foot-copy">// community infrastructure, built to last</div>
+</footer>
+
+<script>
+async function sub(iid, oid) {
+  const el  = document.getElementById(iid);
+  const ok  = document.getElementById(oid);
+  const err = document.getElementById(iid.replace('email','err'));
+  const btn = el.parentElement.querySelector('button');
+  const email = el.value.trim();
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    el.style.borderColor = '#7a3a1a';
+    setTimeout(() => el.style.borderColor = '', 1600);
+    return;
+  }
+
+  btn.disabled = true;
+  if (err) err.style.display = 'none';
+
+  try {
+    const res  = await fetch('/api/waitlist', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ email }),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (data.success) {
+      el.parentElement.style.display = 'none';
+      ok.style.display = 'block';
+    } else {
+      const msg = data.message || 'something went wrong. try again.';
+      if (err) { err.textContent = msg; err.style.display = 'block'; }
+      btn.disabled = false;
+    }
+  } catch {
+    if (err) { err.textContent = 'network error. please try again.'; err.style.display = 'block'; }
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "velocitee",
+  "version": "1.0.0",
+  "description": "velocit.ee landing page backend — waitlist, admin dashboard, health endpoint",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.3",
+    "resend": "^4.0.0",
+    "validator": "^13.12.0"
+  }
+}
