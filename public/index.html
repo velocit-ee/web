@@ -60,18 +60,18 @@ h2{font-size:clamp(1.2rem,3vw,1.75rem);font-weight:600;color:var(--cream);letter
 .prob-item p{font-family:'IBM Plex Sans',sans-serif;font-size:0.83rem;font-weight:300;color:var(--muted);line-height:1.65;}
 #solution{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
 .sol-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:3.5rem;align-items:start;}
-@media(max-width:680px){.sol-grid{grid-template-columns:1fr;}}
 .sol-points{display:flex;flex-direction:column;gap:1.1rem;margin-top:0.5rem;}
 .sol-pt{display:flex;gap:0.75rem;align-items:flex-start;}
 .sol-pt::before{content:'→';color:var(--green);flex-shrink:0;margin-top:1px;}
 .sol-pt p{font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;font-weight:300;color:var(--muted);line-height:1.7;}
 .sol-pt strong{color:var(--text);font-weight:500;}
-.term{background:#080b07;border:1px solid var(--border);font-size:0.74rem;line-height:1.9;}
+.term{background:#080b07;border:1px solid var(--border);font-size:0.74rem;line-height:1.9;overflow:hidden;}
 .term-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.55rem 1rem;display:flex;gap:0.4rem;align-items:center;}
 .d{width:10px;height:10px;border-radius:50%;}
 .d1{background:#553333;}.d2{background:#554433;}.d3{background:#2a4a2a;}
 .term-title{margin:0 auto;color:var(--dim);font-size:0.66rem;transform:translateX(-15px);}
-.term-body{padding:1.25rem 1.5rem;}
+.term-body{padding:1.25rem 1.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.term-body>div{white-space:nowrap;}
 .tc{color:var(--dim);}.tp{color:var(--brown);}.tcm{color:var(--green);}.to{color:var(--muted);}.ts-ok{color:#7dc48a;}
 .cursor{display:inline-block;width:7px;height:0.85em;background:var(--green);vertical-align:text-bottom;animation:blink 1.1s step-end infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
@@ -112,6 +112,27 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .fu{animation:fadeUp 0.65s ease both;}
 .d1s{animation-delay:0.1s;}.d2s{animation-delay:0.22s;}.d3s{animation-delay:0.34s;}.d4s{animation-delay:0.46s;}
+/* ── Mobile ─────────────────────────────────────────────────────────────────── */
+@media(max-width:640px){
+  nav{padding:0.75rem 1.25rem;}
+  .nav-links .nav-text-link{display:none;}
+  .wrap{padding:0 1.25rem;}
+  section{padding:3.5rem 0;}
+  #hero{padding:5.5rem 0 3rem;}
+  .sol-grid{grid-template-columns:1fr;gap:2rem;}
+  .term{font-size:0.68rem;}
+  .term-body{padding:1rem 1rem;}
+  .wl-wrap{flex-direction:column;}
+  .wl-wrap input{width:100%;}
+  .btn-primary{width:100%;text-align:center;}
+  .cta-form{flex-direction:column;align-items:center;}
+  .cta-form input{width:100%;max-width:360px;}
+  .cta-form .btn-primary{width:100%;max-width:360px;}
+  .tiers{grid-template-columns:1fr 1fr;}
+  .stats{gap:1.5rem;}
+  footer{flex-direction:column;align-items:flex-start;gap:0.75rem;}
+  .foot-copy{display:none;}
+}
 </style>
 </head>
 <body>
@@ -119,9 +140,9 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
 <nav>
   <a href="#" class="nav-brand">velocit<span class="tld">.ee</span></a>
   <div class="nav-links">
-    <a href="#solution">how it works</a>
-    <a href="#pricing">pricing</a>
-    <a href="https://github.com/Wiesbaden-Cyber/Stemlab-25-26" target="_blank">github</a>
+    <a href="#solution" class="nav-text-link">how it works</a>
+    <a href="#pricing" class="nav-text-link">pricing</a>
+    <a href="https://github.com/InDaSky314/velocitee" target="_blank" class="nav-text-link">github</a>
     <button class="btn-nav" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">join waitlist</button>
   </div>
 </nav>
@@ -311,8 +332,8 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
 <footer>
   <div class="foot-brand">velocit<span class="tld">.ee</span></div>
   <div class="foot-links">
-    <a href="https://github.com/Wiesbaden-Cyber/Stemlab-25-26" target="_blank">github</a>
-    <a href="mailto:hello@velocit.ee">hello@velocit.ee</a>
+    <a href="https://github.com/InDaSky314/velocitee" target="_blank">github</a>
+    <a href="mailto:inquiries@velocit.ee">inquiries@velocit.ee</a>
   </div>
   <div class="foot-copy">// community infrastructure, built to last</div>
 </footer>

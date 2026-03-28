@@ -74,7 +74,7 @@ async function sendNotification(email, total) {
   if (!process.env.RESEND_API_KEY || !process.env.NOTIFY_PERSONAL_EMAIL) return;
   const ts = new Date().toUTCString();
   await resend.emails.send({
-    from:    'hello@velocit.ee',
+    from:    'inquiries@velocit.ee',
     to:      [process.env.NOTIFY_PERSONAL_EMAIL, 'hello@velocit.ee'],
     subject: `New velocit.ee signup — #${total}`,
     text: [
