@@ -91,3 +91,7 @@ CLOUDFLARE_TUNNEL_TOKEN=<token> bash setup.sh
 ## license
 
 mit — see [LICENSE](LICENSE).
+
+### 2026-04-05 — updated landing page (index (3).html)
+
+deployed updated `public/index.html` prepared by web personality. CF obfuscations cleaned before deploy.
