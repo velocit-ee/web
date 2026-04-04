@@ -285,7 +285,7 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
   <div class="wrap">
     <div class="hero-label fu">open source infrastructure platform</div>
     <h1 class="fu d1s">networks that<br/><span class="hl">survive anyone</span><br/><span class="hl2">leaving.</span></h1>
-    <p class="hero-sub fu d2s">Most small orgs run on networks <strong>one person built and only they understand.</strong> velocit.ee deploys self-documenting, self-healing infrastructure — clone a repo, run one command, everything rebuilds from bare metal.</p>
+    <p class="hero-sub fu d2s">Most small orgs run on networks <strong>one person built and only they understand.</strong> velocit.ee is a modular deployment platform that takes hardware from bare metal to a fully documented, running network stack — one command at a time.</p>
     <div class="fu d3s">
       <div class="wl-wrap">
         <input type="email" id="hero-email" placeholder="you@example.com"/>
@@ -322,7 +322,7 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
       </div>
       <div class="prob-item">
         <div class="prob-idx">[04]</div>
-        <div><h3>connectivity deserts</h3><p>Community networks and rural ISPs need real tooling to scale affordable internet access. The software to run them barely exists at a price they can afford.</p></div>
+        <div><h3>no handoff path</h3><p>There's no standard way to hand a network off. No documentation, no rebuild script, no source of truth. Every transition is a crisis waiting to happen.</p></div>
       </div>
     </div>
   </div>
@@ -331,7 +331,7 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
 <section id="pipeline">
   <div class="pipe-header">
     <div class="sec-label">deployment pipeline</div>
-    <h2 style="margin-bottom:0">from bare metal to running stack — every step, nothing hidden.</h2>
+    <h2 style="margin-bottom:0">four engines. one pipeline. bare metal to documented, running stack.</h2>
   </div>
   <div class="pipe-progress-track">
     <div class="pipe-progress-fill" id="pipe-prog" style="width:20%"></div>
@@ -367,10 +367,10 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
         <div class="sec-label">how it works</div>
         <h2>describe your hardware. get your config. run one command.</h2>
         <div class="sol-points">
-          <div class="sol-pt"><p><strong>AI-assisted setup</strong> — answer questions about your gear and use case. velocit.ee generates a complete deployment config. no prior infra expertise required.</p></div>
-          <div class="sol-pt"><p><strong>infrastructure as code</strong> — everything lives in a git repo. ansible, terraform, maas. clone it anywhere, rebuild from scratch, any time.</p></div>
-          <div class="sol-pt"><p><strong>self-documenting by design</strong> — every service, VLAN, and config change is tracked and explained. a new admin with zero prior context can pick up exactly where the last one left off.</p></div>
-          <div class="sol-pt"><p><strong>self-healing</strong> — automatic updates, alerting, and recovery runbooks baked in from the start. not bolted on later.</p></div>
+          <div class="sol-pt"><p><strong>AI-assisted config generation</strong> — answer a survey or describe your setup in plain text. velocit.ee generates a complete, ready-to-run config bundle. no guesswork, no templates to reverse-engineer.</p></div>
+          <div class="sol-pt"><p><strong>modular by design</strong> — four independent engines: metal provisioning, networking, services, lifecycle. already have Proxmox running? skip VME. already have networking? skip VNE. enter the pipeline wherever you are.</p></div>
+          <div class="sol-pt"><p><strong>self-documenting</strong> — every engine writes a handoff manifest. the lifecycle engine turns those into human-readable documentation automatically. a new admin with zero context can pick up exactly where the last one left off.</p></div>
+          <div class="sol-pt"><p><strong>built to be rebuilt</strong> — every config is reproducible. drift is detected. repair is a single command. the network doesn't depend on anyone's memory.</p></div>
         </div>
       </div>
       <div class="term">
@@ -379,19 +379,20 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
           <div class="term-title">velocit.ee deploy</div>
         </div>
         <div class="term-body">
-<div class="tc"># clone your org's infra repo</div>
-<div><span class="tp">$</span> <span class="tcm">git clone git@github.com/your-org/infra</span></div>
-<div><span class="tp">$</span> <span class="tcm">cd infra && ./deploy.sh</span></div>
+<div class="tc"># pull your config bundle and deploy</div>
+<div><span class="tp">$</span> <span class="tcm">velocitee deploy --config ./acme-org.yml</span></div>
 <br/>
-<div class="to">→ reading velocitee.yml...</div>
-<div class="to">→ detected: proxmox + truenas + cisco</div>
-<div class="to">→ provisioning bare metal (maas)...</div>
-<div class="to">→ creating vms (terraform)...</div>
-<div class="to">→ configuring services (ansible)...</div>
-<div class="to">&nbsp; gitlab, wazuh, netbox, vaultwarden,</div>
-<div class="to">&nbsp; freeradius, ollama, tailscale...</div>
+<div class="to">→ [seed]  stack online — dnsmasq + nginx ready</div>
+<div class="to">→ [VME]   pxe booting: 192.168.88.10 ...</div>
+<div class="to">→ [VME]   installing proxmox ve 8.2 (unattended)</div>
+<div class="to">→ [VME]   ✓ ssh verified — handoff manifest written</div>
+<div class="to">→ [VNE]   deploying opnsense vm...</div>
+<div class="to">→ [VNE]   configuring vlans, dhcp, firewall rules</div>
+<div class="to">→ [VNE]   ✓ egress verified — handoff manifest written</div>
+<div class="to">→ [VSE]   deploying service catalog...</div>
+<div class="to">→ [VLE]   generating documentation...</div>
 <br/>
-<div class="ts-ok">✓ deployed in 14m 22s</div>
+<div class="ts-ok">✓ deployed in 21m 08s</div>
 <div class="ts-ok">✓ documentation generated</div>
 <div class="ts-ok">✓ monitoring active</div>
 <br/>
@@ -406,50 +407,40 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
   <div class="wrap">
     <div class="sec-label">pricing</div>
     <h2>the core is free. always.</h2>
-    <p style="font-family:'IBM Plex Sans',sans-serif;font-weight:300;color:var(--muted);font-size:0.85rem;max-width:540px;margin-bottom:2rem;line-height:1.75;">we're not here to extract money from schools and nonprofits. the automation engine is open source and self-hostable forever. we charge for the hosted platform that makes it accessible to non-technical orgs.</p>
+    <p style="font-family:'IBM Plex Sans',sans-serif;font-weight:300;color:var(--muted);font-size:0.85rem;max-width:540px;margin-bottom:2rem;line-height:1.75;">the engines are open source and self-hostable, forever. the paid tier covers AI-assisted config generation — we run the AI calls, you get a ready-to-run config bundle. no technical knowledge required.</p>
     <div class="tiers">
       <div class="tier">
         <div class="tier-name">SELF-HOSTED</div>
         <div class="tier-price">free <small>/ forever</small></div>
         <ul class="tier-feats">
-          <li>full open source core</li>
-          <li>ansible + terraform + maas</li>
+          <li>full open source engine core</li>
+          <li>vme, vne, vse, vle — all four engines</li>
           <li>community config library</li>
-          <li>github-based deploy</li>
+          <li>raw file + git config sources</li>
           <li>community support</li>
         </ul>
       </div>
       <div class="tier hi">
-        <div class="tier-flag">RECOMMENDED</div>
-        <div class="tier-name">COMMUNITY ORG</div>
-        <div class="tier-price">$29 <small>/ mo</small></div>
+        <div class="tier-flag">EARLY ACCESS</div>
+        <div class="tier-name">BUILDER</div>
+        <div class="tier-price">TBD <small>/ mo</small></div>
         <ul class="tier-feats">
-          <li>hosted AI config generator</li>
-          <li>web deploy dashboard</li>
-          <li>monitoring + alerting UI</li>
-          <li>automatic updates</li>
-        </ul>
-        <div class="tier-note">schools &amp; nonprofits: free</div>
-      </div>
-      <div class="tier">
-        <div class="tier-name">COMMUNITY ISP</div>
-        <div class="tier-price">$99 <small>/ mo</small></div>
-        <ul class="tier-feats">
-          <li>everything in community org</li>
-          <li>multi-site management</li>
-          <li>billing + member tools</li>
-          <li>bandwidth + QoS visibility</li>
+          <li>AI config generator (survey + prompt)</li>
+          <li>official config registry</li>
+          <li>authenticated config pulls at deploy time</li>
+          <li>config versioning + history</li>
           <li>email support</li>
         </ul>
+        <div class="tier-note">pricing finalized at launch</div>
       </div>
       <div class="tier">
-        <div class="tier-name">MUNICIPAL / ENTERPRISE</div>
-        <div class="tier-price">custom</div>
+        <div class="tier-name">COMING SOON</div>
+        <div class="tier-price">— <small></small></div>
         <ul class="tier-feats">
-          <li>everything in ISP tier</li>
-          <li>SLA guarantees</li>
-          <li>dedicated support</li>
-          <li>custom integrations</li>
+          <li>cloud-hosted remote deployment</li>
+          <li>plug in a bootstrap device</li>
+          <li>we run the pipeline from our side</li>
+          <li>no seed machine required</li>
         </ul>
       </div>
     </div>
@@ -459,23 +450,23 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
 <section id="roadmap">
   <div class="wrap">
     <div class="sec-label">the long game</div>
-    <h2>software first. infrastructure second. connectivity for everyone, eventually.</h2>
+    <h2>one engine at a time. each phase ships when it's solid.</h2>
     <div class="rmap">
       <div class="rmap-item">
         <div class="rmap-node now">01</div>
-        <div class="rmap-content"><h3>infrastructure SaaS — now</h3><p>Open source deployment automation for community networks, schools, and small orgs. Build the product, prove the model, grow the community.</p></div>
+        <div class="rmap-content"><h3>VME — metal provisioning engine — now</h3><p>PXE boot any x86_64 hardware, install Proxmox VE or Ubuntu Server fully unattended, write a handoff manifest, tear down the seed stack. first public release. this is the foundation everything else builds on.</p></div>
       </div>
       <div class="rmap-item">
         <div class="rmap-node">02</div>
-        <div class="rmap-content"><h3>community ISP tooling</h3><p>Back-office platform for community-run internet providers — billing, member management, network visibility. built for people, not Comcast.</p></div>
+        <div class="rmap-content"><h3>VNE — network configuration engine</h3><p>Consume the VME handoff manifest and build the network layer. OPNsense on Proxmox, VLANs, DHCP, DNS, baseline firewall. automated connectivity verification before handoff. join-existing path follows after build-new is solid.</p></div>
       </div>
       <div class="rmap-item">
         <div class="rmap-node">03</div>
-        <div class="rmap-content"><h3>regional ISP infrastructure</h3><p>Use stage 1+2 cash flow and credibility to build physical infrastructure in underserved areas. internet as a utility, not a luxury.</p></div>
+        <div class="rmap-content"><h3>VSE — services configuration engine</h3><p>Deploy and configure a catalog of services on the verified network. containerized, idempotent, driven entirely by your config bundle. service catalog defined by what real orgs actually run.</p></div>
       </div>
       <div class="rmap-item">
         <div class="rmap-node">04</div>
-        <div class="rmap-content"><h3>aerospace + satellite connectivity</h3><p>Close the loop. vertically integrated connectivity — from deployment software all the way to low-earth-orbit infrastructure.</p></div>
+        <div class="rmap-content"><h3>VLE — lifecycle engine + beyond</h3><p>Monitoring, auto-documentation, drift detection, single-command repair. this is what makes the tagline true. after VLE ships: cloud-hosted remote deployment, expanded hardware support, and eventually — infrastructure that scales all the way up.</p></div>
       </div>
     </div>
   </div>
@@ -510,25 +501,25 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
 // ═══════════════════════════════════════════════
 const PIPE_STEPS = [
   { tab:'bare metal', title:'bare metal',
-    cmd:'$ maas admin machines list --status=new',
-    desc:'A physical machine. No OS. No config. Just hardware sitting in a rack, cold and waiting to be claimed.',
-    meta:[{k:'arch',v:'any x86_64'},{k:'ram',v:'≥ 4 gb'},{k:'storage',v:'≥ 64 gb'}] },
-  { tab:'pxe + maas', title:'pxe boot + maas',
-    cmd:'$ maas admin machine deploy <id> --distro-series=jammy',
-    desc:'MAAS boots the node over PXE, inventories hardware automatically, and assigns it a role in your fabric.',
-    meta:[{k:'proto',v:'pxe / ipxe'},{k:'dhcp',v:'maas managed'},{k:'api',v:'rest + oauth1'}] },
-  { tab:'os deploy', title:'os provision',
-    cmd:'$ cloud-init status --wait && echo done',
-    desc:'Ubuntu deploys via curtin in minutes. Minimal and reproducible. Cloud-init seeds credentials and base config.',
-    meta:[{k:'os',v:'ubuntu 22.04'},{k:'method',v:'curtin'},{k:'time',v:'~ 8 min'}] },
-  { tab:'iac', title:'terraform + ansible',
-    cmd:'$ ansible-playbook -i inventory site.yml',
-    desc:'Terraform provisions the topology. Ansible pushes your config. Every run is idempotent — same result every time.',
-    meta:[{k:'infra',v:'terraform'},{k:'config',v:'ansible'},{k:'runs',v:'idempotent'}] },
-  { tab:'live', title:'services live',
-    cmd:'$ velocit status --all | jq .health',
-    desc:'Your full stack is running. Monitored. Auto-documented. One command to nuke and rebuild from scratch.',
-    meta:[{k:'uptime',v:'monitored'},{k:'docs',v:'auto-gen'},{k:'rebuild',v:'single cmd'}] },
+    cmd:'$ velocitee preflight --scan-network',
+    desc:'A physical machine. No OS. No config. Just hardware in a rack, cold and waiting. The seed machine connects to the provisioning network and discovers what\'s there.',
+    meta:[{k:'arch',v:'x86_64'},{k:'ram',v:'≥ 4 gb'},{k:'storage',v:'≥ 64 gb'}] },
+  { tab:'vme', title:'Metal Provisioning Engine',
+    cmd:'$ velocitee deploy --engine vme --target proxmox',
+    desc:'The seed machine (laptop or Pi) temporarily owns DHCP on the provisioning VLAN via dnsmasq. Target hardware PXE boots through iPXE, installs Proxmox VE or Ubuntu Server fully unattended, and writes a handoff manifest with SSH access and hardware profile.',
+    meta:[{k:'proto',v:'ipxe / tftp'},{k:'dhcp',v:'dnsmasq (temp)'},{k:'targets',v:'proxmox, ubuntu'}] },
+  { tab:'vne', title:'Network Configuration Engine',
+    cmd:'$ velocitee deploy --engine vne --path build-new',
+    desc:'OPNsense deploys as a VM on Proxmox via Terraform. VLANs, DHCP pools, DNS, NAT, and a baseline firewall ruleset are configured via Ansible and the OPNsense API. Automated connectivity checks run before the engine declares success.',
+    meta:[{k:'firewall',v:'opnsense vm'},{k:'config',v:'terraform + ansible'},{k:'verify',v:'auto-checked'}] },
+  { tab:'vse', title:'Services Configuration Engine',
+    cmd:'$ velocitee deploy --engine vse',
+    desc:'Services deploy as Docker containers or LXC instances on the verified network. Each service is configured, connected to the right VLAN, and confirmed healthy before the engine exits. Driven entirely by your config bundle.',
+    meta:[{k:'runtime',v:'docker / lxc'},{k:'config',v:'ansible roles'},{k:'state',v:'idempotent'}] },
+  { tab:'vle', title:'Lifecycle Engine',
+    cmd:'$ velocitee status --all',
+    desc:'Your stack is running, monitored, and fully documented. Health alerts are live. Config drift is detected automatically. A new admin with zero prior context can read the generated docs and rebuild the entire stack with one command.',
+    meta:[{k:'uptime',v:'monitored'},{k:'docs',v:'auto-generated'},{k:'rebuild',v:'single cmd'}] },
 ];
 
 // ── UI ──────────────────────────────────────────
@@ -856,16 +847,4 @@ async function sub(iid, oid) {
   }
 
   btn.disabled = true;
-  if (err) err.style.display = 'none';
-
-  try {
-    const res  = await fetch('/api/waitlist', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ email }),
-    });
-    const data = await res.json().catch(() => ({}));
-
-    if (data.success) {
-      el.parentElement.style.display = 'none';
-      ok.style.display = 'bloc
+  if (err) err.st
