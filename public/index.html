@@ -133,13 +133,147 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
   footer{flex-direction:column;align-items:flex-start;gap:0.75rem;}
   .foot-copy{display:none;}
 }
+
+/* ── PIPELINE SECTION ─────────────────────────────── */
+#pipeline{
+  padding:0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.pipe-header{
+  padding:2.5rem 2rem 2rem;
+  border-bottom:1px solid var(--border);
+}
+.pipe-progress-track{
+  height:1px;background:var(--border);
+}
+.pipe-progress-fill{
+  height:100%;background:var(--green);
+  transition:width 0.55s cubic-bezier(.4,0,.2,1);
+}
+.pipe-main{
+  display:flex;
+  height:calc(100vh - 48px - 94px - 1px);
+  min-height:500px;
+}
+.pipe-left{
+  width:360px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--border);
+  background:var(--surface);
+}
+.pipe-tabs{
+  display:flex;
+  border-bottom:1px solid var(--border);
+}
+.pipe-tab{
+  flex:1;padding:0.55rem 0.3rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.6rem;font-weight:500;
+  color:var(--muted);background:transparent;
+  border:none;border-right:1px solid var(--border);
+  cursor:pointer;transition:color 0.18s,background 0.18s;
+  text-align:center;line-height:1.4;
+}
+.pipe-tab:last-child{border-right:none;}
+.pipe-tab .tab-n{
+  display:block;font-size:0.5rem;
+  color:var(--dim);margin-bottom:1px;
+}
+.pipe-tab:hover{color:var(--text);background:rgba(90,158,106,0.04);}
+.pipe-tab.active{
+  color:var(--green-hi);
+  background:rgba(90,158,106,0.07);
+  border-bottom:1px solid var(--green);
+  margin-bottom:-1px;
+}
+.pipe-tab.active .tab-n{color:var(--green);}
+.pipe-body{
+  flex:1;padding:1.75rem;
+  display:flex;flex-direction:column;gap:1.1rem;
+  overflow-y:auto;transition:opacity 0.2s ease;
+}
+.pipe-body.fading{opacity:0;}
+.pipe-title{
+  font-size:1.35rem;font-weight:600;
+  color:var(--cream);letter-spacing:-0.03em;line-height:1.2;
+}
+.pipe-cmd{
+  font-size:0.68rem;color:var(--green);
+  background:rgba(90,158,106,0.06);
+  border-left:2px solid var(--green);
+  border-top:1px solid rgba(90,158,106,0.15);
+  border-bottom:1px solid rgba(90,158,106,0.15);
+  border-right:1px solid rgba(90,158,106,0.15);
+  padding:0.55rem 0.875rem;
+  overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-style:italic;
+}
+.pipe-desc{
+  font-size:0.8rem;font-weight:300;
+  color:var(--text);line-height:1.75;
+}
+.pipe-meta{
+  border-top:1px solid var(--border);
+  padding-top:1rem;
+  display:flex;flex-direction:column;gap:0.32rem;
+}
+.pipe-meta-row{
+  display:flex;gap:1.25rem;font-size:0.68rem;
+}
+.pipe-meta-k{color:var(--muted);width:68px;flex-shrink:0;}
+.pipe-meta-v{color:var(--brown-hi);}
+.pipe-foot{
+  padding:0.875rem 1.75rem;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.pipe-counter{font-size:0.62rem;color:var(--muted);}
+.pipe-counter strong{color:var(--green-hi);}
+.pipe-nav-btns{display:flex;gap:0.4rem;}
+.pipe-btn{
+  padding:0.32rem 0.8rem;
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;
+  background:transparent;border:1px solid var(--border);
+  color:var(--muted);cursor:pointer;transition:all 0.18s;
+}
+.pipe-btn:hover:not(:disabled){border-color:var(--green);color:var(--green-hi);}
+.pipe-btn:disabled{opacity:0.28;cursor:not-allowed;}
+.pipe-btn.fwd{border-color:var(--green);color:var(--green-hi);}
+.pipe-btn.fwd:hover:not(:disabled){background:var(--green);color:var(--bg);}
+.pipe-right{
+  flex:1;position:relative;
+  background:var(--bg);overflow:hidden;
+}
+#pipe-canvas{
+  width:100%;height:100%;display:block;
+  cursor:grab;
+}
+#pipe-canvas:active{cursor:grabbing;}
+.pipe-canvas-hint{
+  position:absolute;bottom:0.875rem;right:1rem;
+  font-size:0.58rem;color:var(--dim);
+  pointer-events:none;letter-spacing:0.06em;
+  user-select:none;
+}
+@media(max-width:820px){
+  .pipe-main{flex-direction:column;height:auto;}
+  .pipe-left{width:100%;min-height:300px;}
+  .pipe-right{min-height:340px;}
+}
+@media(max-width:640px){
+  .pipe-left{min-height:280px;}
+  .pipe-right{min-height:300px;}
+}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
 <nav>
   <a href="#" class="nav-brand">velocit<span class="tld">.ee</span></a>
   <div class="nav-links">
+    <a href="#pipeline" class="nav-text-link">pipeline</a>
     <a href="#solution" class="nav-text-link">how it works</a>
     <a href="#pricing" class="nav-text-link">pricing</a>
     <a href="https://github.com/velocit-ee/web" target="_blank" class="nav-text-link">github</a>
@@ -190,6 +324,38 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
         <div class="prob-idx">[04]</div>
         <div><h3>connectivity deserts</h3><p>Community networks and rural ISPs need real tooling to scale affordable internet access. The software to run them barely exists at a price they can afford.</p></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="pipeline">
+  <div class="pipe-header">
+    <div class="sec-label">deployment pipeline</div>
+    <h2 style="margin-bottom:0">from bare metal to running stack — every step, nothing hidden.</h2>
+  </div>
+  <div class="pipe-progress-track">
+    <div class="pipe-progress-fill" id="pipe-prog" style="width:20%"></div>
+  </div>
+  <div class="pipe-main">
+    <div class="pipe-left">
+      <div class="pipe-tabs" id="pipe-tabs"></div>
+      <div class="pipe-body" id="pipe-body">
+        <div class="pipe-title"  id="pipe-title"></div>
+        <div class="pipe-cmd"   id="pipe-cmd"></div>
+        <div class="pipe-desc"  id="pipe-desc"></div>
+        <div class="pipe-meta"  id="pipe-meta"></div>
+      </div>
+      <div class="pipe-foot">
+        <div class="pipe-counter">step <strong id="pipe-num">1</strong> of 5</div>
+        <div class="pipe-nav-btns">
+          <button class="pipe-btn" id="pipe-prev" disabled>← prev</button>
+          <button class="pipe-btn fwd" id="pipe-next">next →</button>
+        </div>
+      </div>
+    </div>
+    <div class="pipe-right">
+      <canvas id="pipe-canvas"></canvas>
+      <div class="pipe-canvas-hint">drag to rotate</div>
     </div>
   </div>
 </section>
@@ -339,6 +505,343 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
 </footer>
 
 <script>
+// ═══════════════════════════════════════════════
+// PIPELINE — STEP DATA
+// ═══════════════════════════════════════════════
+const PIPE_STEPS = [
+  { tab:'bare metal', title:'bare metal',
+    cmd:'$ maas admin machines list --status=new',
+    desc:'A physical machine. No OS. No config. Just hardware sitting in a rack, cold and waiting to be claimed.',
+    meta:[{k:'arch',v:'any x86_64'},{k:'ram',v:'≥ 4 gb'},{k:'storage',v:'≥ 64 gb'}] },
+  { tab:'pxe + maas', title:'pxe boot + maas',
+    cmd:'$ maas admin machine deploy <id> --distro-series=jammy',
+    desc:'MAAS boots the node over PXE, inventories hardware automatically, and assigns it a role in your fabric.',
+    meta:[{k:'proto',v:'pxe / ipxe'},{k:'dhcp',v:'maas managed'},{k:'api',v:'rest + oauth1'}] },
+  { tab:'os deploy', title:'os provision',
+    cmd:'$ cloud-init status --wait && echo done',
+    desc:'Ubuntu deploys via curtin in minutes. Minimal and reproducible. Cloud-init seeds credentials and base config.',
+    meta:[{k:'os',v:'ubuntu 22.04'},{k:'method',v:'curtin'},{k:'time',v:'~ 8 min'}] },
+  { tab:'iac', title:'terraform + ansible',
+    cmd:'$ ansible-playbook -i inventory site.yml',
+    desc:'Terraform provisions the topology. Ansible pushes your config. Every run is idempotent — same result every time.',
+    meta:[{k:'infra',v:'terraform'},{k:'config',v:'ansible'},{k:'runs',v:'idempotent'}] },
+  { tab:'live', title:'services live',
+    cmd:'$ velocit status --all | jq .health',
+    desc:'Your full stack is running. Monitored. Auto-documented. One command to nuke and rebuild from scratch.',
+    meta:[{k:'uptime',v:'monitored'},{k:'docs',v:'auto-gen'},{k:'rebuild',v:'single cmd'}] },
+];
+
+// ── UI ──────────────────────────────────────────
+let pipeStep = 0;
+const pTabsEl  = document.getElementById('pipe-tabs');
+const pBodyEl  = document.getElementById('pipe-body');
+const pProgEl  = document.getElementById('pipe-prog');
+const pTitleEl = document.getElementById('pipe-title');
+const pCmdEl   = document.getElementById('pipe-cmd');
+const pDescEl  = document.getElementById('pipe-desc');
+const pMetaEl  = document.getElementById('pipe-meta');
+const pNumEl   = document.getElementById('pipe-num');
+const pPrev    = document.getElementById('pipe-prev');
+const pNext    = document.getElementById('pipe-next');
+
+pTabsEl.innerHTML = PIPE_STEPS.map((s,i) =>
+  `<button class="pipe-tab${i===0?' active':''}" data-i="${i}">
+    <span class="tab-n">0${i+1}</span>${s.tab}
+  </button>`
+).join('');
+pTabsEl.querySelectorAll('.pipe-tab').forEach(b =>
+  b.addEventListener('click', () => pipeGoTo(+b.dataset.i))
+);
+
+function pipeRenderUI(idx) {
+  const s = PIPE_STEPS[idx];
+  pBodyEl.classList.add('fading');
+  setTimeout(() => {
+    pTitleEl.textContent = s.title;
+    pCmdEl.textContent   = s.cmd;
+    pDescEl.textContent  = s.desc;
+    pMetaEl.innerHTML    = s.meta.map(m =>
+      `<div class="pipe-meta-row"><span class="pipe-meta-k">${m.k}</span><span class="pipe-meta-v">${m.v}</span></div>`
+    ).join('');
+    pNumEl.textContent   = idx + 1;
+    pProgEl.style.width  = `${((idx+1)/PIPE_STEPS.length)*100}%`;
+    pTabsEl.querySelectorAll('.pipe-tab').forEach((b,i) => b.classList.toggle('active', i===idx));
+    pPrev.disabled = idx === 0;
+    pNext.disabled = idx === PIPE_STEPS.length - 1;
+    pBodyEl.classList.remove('fading');
+  }, 150);
+}
+pipeRenderUI(0);
+pPrev.addEventListener('click', () => pipeGoTo(pipeStep - 1));
+pNext.addEventListener('click', () => pipeGoTo(pipeStep + 1));
+document.addEventListener('keydown', e => {
+  if (!isPipeVisible()) return;
+  if (e.key==='ArrowRight') pipeGoTo(Math.min(PIPE_STEPS.length-1, pipeStep+1));
+  if (e.key==='ArrowLeft')  pipeGoTo(Math.max(0, pipeStep-1));
+});
+function isPipeVisible() {
+  const r = document.getElementById('pipeline').getBoundingClientRect();
+  return r.top < window.innerHeight && r.bottom > 0;
+}
+
+// ── THREE.JS ────────────────────────────────────
+const pCanvas = document.getElementById('pipe-canvas');
+const pRenderer = new THREE.WebGLRenderer({ canvas: pCanvas, antialias: true, alpha: true });
+pRenderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+const pScene  = new THREE.Scene();
+const pClock  = new THREE.Clock();
+const pCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+pCamera.position.set(0, 2.4, 8);
+pCamera.lookAt(0, 0.4, 0);
+
+pScene.add(new THREE.AmbientLight(0x4a7a55, 0.45));
+const pKey = new THREE.DirectionalLight(0xaad4b8, 1.1);
+pKey.position.set(4, 6, 5);
+pScene.add(pKey);
+const pFill = new THREE.DirectionalLight(0xc4a06a, 0.3);
+pFill.position.set(-4, 2, -3);
+pScene.add(pFill);
+
+const pRoot = new THREE.Group();
+pScene.add(pRoot);
+
+function pStdMat(color, opts={}) {
+  const m = new THREE.MeshStandardMaterial({ color, metalness:0.55, roughness:0.6, ...opts });
+  m._base = (opts.opacity !== undefined) ? opts.opacity : 1;
+  if (m._base < 1) m.transparent = true;
+  return m;
+}
+function pWireMat(color, opacity=1) {
+  const m = new THREE.LineBasicMaterial({ color, transparent: opacity<1, opacity });
+  m._base = opacity; return m;
+}
+function pPlainMat(color, opacity=1) {
+  const m = new THREE.MeshBasicMaterial({ color, transparent: opacity<1, opacity });
+  m._base = opacity; return m;
+}
+
+function pMakeServer(scale=1, lit=true) {
+  const g = new THREE.Group();
+  const chassis = new THREE.Mesh(
+    new THREE.BoxGeometry(3.0, 0.6, 1.65),
+    pStdMat(0x131c10, { metalness:0.7, roughness:0.5 })
+  );
+  g.add(chassis);
+  g.add(new THREE.LineSegments(
+    new THREE.EdgesGeometry(chassis.geometry),
+    pWireMat(lit ? 0x3a5a38 : 0x1c261a, 0.85)
+  ));
+  for (let i=0; i<3; i++) {
+    const bayGeo = new THREE.BoxGeometry(0.56, 0.22, 0.04);
+    const bay = new THREE.Mesh(bayGeo, pStdMat(0x080d08, { metalness:0.85, roughness:0.9 }));
+    bay.position.set(-0.65 + i*0.6, 0, 0.845);
+    g.add(bay);
+    const bw = new THREE.LineSegments(new THREE.EdgesGeometry(bayGeo), pWireMat(0x232e22, 0.4));
+    bw.position.copy(bay.position); g.add(bw);
+  }
+  var ridge = new THREE.Mesh(new THREE.BoxGeometry(3.0,0.04,0.055), pStdMat(0x090e09));
+  ridge.position.set(0, 0.3, 0.84);
+  g.add(ridge);
+  const ledGeo = new THREE.SphereGeometry(0.043, 8, 8);
+  const l1 = new THREE.Mesh(ledGeo, pPlainMat(lit ? 0x7dc48a : 0xdd1e0a));
+  l1.position.set(1.26, 0.08, 0.85); g.add(l1);
+  const l2 = new THREE.Mesh(ledGeo.clone(), pPlainMat(lit ? 0xc4a06a : 0x1a0808));
+  l2.position.set(1.1, 0.08, 0.85); g.add(l2);
+  g.scale.setScalar(scale); return g;
+}
+
+function pMakeGrid(size=8, div=8, y=-0.82) {
+  const g = new THREE.GridHelper(size, div, 0x192717, 0x101a0e);
+  g.position.y = y; return g;
+}
+
+function pSetOpacity(group, val) {
+  group.traverse(obj => {
+    const mats = obj.material ? (Array.isArray(obj.material)?obj.material:[obj.material]) : [];
+    mats.forEach(m => {
+      m.transparent = true;
+      m.opacity = Math.max(0, Math.min(1, (m._base!==undefined?m._base:1)*val));
+    });
+  });
+}
+
+function pBuildS1() {
+  const g = new THREE.Group();
+  g.add(pMakeServer(1, false)); g.add(pMakeGrid());
+  const pl = new THREE.PointLight(0x200808, 0.4, 3.5);
+  pl.position.set(1.2, 0.8, 1.2); g.add(pl); return g;
+}
+
+function pBuildS2() {
+  const g = new THREE.Group(); g.userData.dots=[];
+  g.add(pMakeServer(1,true)); g.add(pMakeGrid());
+  const pl = new THREE.PointLight(0x5a9e6a, 0.9, 5);
+  pl.position.set(0,1.2,2); g.add(pl);
+  const origin = new THREE.Vector3(0,0.15,0);
+  const ends = [
+    new THREE.Vector3( 4.0, 0.15,  0.5), new THREE.Vector3(-4.0, 0.15,  0.5),
+    new THREE.Vector3( 0.5, 0.15,  3.8), new THREE.Vector3(-0.5, 0.15, -4.0),
+    new THREE.Vector3( 3.2, 0.6,  -2.8), new THREE.Vector3(-3.2, 0.6,   2.8),
+  ];
+  ends.forEach((end,i) => {
+    g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([origin,end]), pWireMat(0x3a6848,0.4)));
+    const nd = new THREE.Mesh(new THREE.SphereGeometry(0.13,8,8), pPlainMat(0x7dc48a));
+    nd.position.copy(end); g.add(nd);
+    const halo = new THREE.Mesh(new THREE.SphereGeometry(0.26,8,8), pPlainMat(0x7dc48a,0.07));
+    halo.position.copy(end); g.add(halo);
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.062,6,6), pPlainMat(0xd4ccb4,0.9));
+    dot.userData = { origin:origin.clone(), target:end.clone(), t:i*0.18, spd:0.007+Math.random()*0.004 };
+    g.add(dot); g.userData.dots.push(dot);
+  });
+  return g;
+}
+
+function pBuildS3() {
+  const g = new THREE.Group();
+  g.add(pMakeServer(1,true)); g.add(pMakeGrid());
+  const pl = new THREE.PointLight(0x5a9e6a,1.1,6); pl.position.set(0,2.2,2); g.add(pl);
+  for (let i=0; i<5; i++) {
+    const geo = new THREE.BoxGeometry(2.78,0.2,1.55);
+    const lm = pStdMat(new THREE.Color().setHSL(0.32,0.5,0.07+i*0.038),
+      { metalness:0.15, roughness:0.85, opacity:0.93 });
+    const layer = new THREE.Mesh(geo, lm);
+    layer.position.y = 0.68 + i*0.3; g.add(layer);
+    const ew = new THREE.LineSegments(new THREE.EdgesGeometry(geo), pWireMat(0x3a7a4a,0.3+i*0.1));
+    ew.position.copy(layer.position); g.add(ew);
+  }
+  return g;
+}
+
+function pBuildS4() {
+  const g = new THREE.Group(); g.userData.mods=[];
+  g.add(pMakeServer(1,true)); g.add(pMakeGrid());
+  const pl = new THREE.PointLight(0x7dc48a,1.3,7); pl.position.set(0,2.8,2); g.add(pl);
+  for (let i=0; i<5; i++) {
+    const geo = new THREE.BoxGeometry(2.78,0.2,1.55);
+    const layer = new THREE.Mesh(geo, pStdMat(0x0d1509,{opacity:0.65}));
+    layer.position.y = 0.68+i*0.3; g.add(layer);
+    const ew = new THREE.LineSegments(new THREE.EdgesGeometry(geo), pWireMat(0x243a22,0.22));
+    ew.position.copy(layer.position); g.add(ew);
+  }
+  const mpos = [[-3.3,2.9,0.4],[3.2,2.3,-0.5],[-2.9,1.7,-1.9],[2.7,3.1,1.3],
+                 [0.3,3.5,2.1],[-1.9,3.3,-0.9],[2.3,1.9,1.9],[-2.5,2.7,1.1]];
+  mpos.forEach((pos,i) => {
+    const geo = new THREE.BoxGeometry(0.41,0.41,0.41);
+    const cube = new THREE.Mesh(geo, pStdMat(0x3a6a3a,{
+      metalness:0.35, roughness:0.5,
+      emissive:new THREE.Color(0x1a4522), emissiveIntensity:0.9
+    }));
+    cube.position.set(...pos);
+    cube.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+    cube.userData = { baseY:pos[1], phase:i*0.85+Math.random()*0.4 };
+    cube.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), pWireMat(0x7dc48a,0.65)));
+    g.add(cube); g.userData.mods.push(cube);
+  });
+  return g;
+}
+
+function pBuildS5() {
+  const g = new THREE.Group(); g.userData.nodes=[];
+  const spos = [[0,0,0],[-2.7,0,-1.6],[2.7,0,-1.6],[0,0,2.8]];
+  spos.forEach((pos,i) => {
+    const srv = pMakeServer(0.63,true);
+    srv.position.set(...pos);
+    if (i>0) srv.rotation.y = Math.atan2(pos[0],pos[2])*0.25;
+    g.add(srv);
+    const pl = new THREE.PointLight(0x5a9e6a,0.55,3.2);
+    pl.position.set(pos[0],pos[1]+0.9,pos[2]+0.8); g.add(pl);
+  });
+  [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]].forEach(([a,b]) => {
+    const pa = new THREE.Vector3(...spos[a]).setY(0.1);
+    const pb = new THREE.Vector3(...spos[b]).setY(0.1);
+    g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([pa,pb]), pWireMat(0x4a8a5a,0.32)));
+  });
+  spos.forEach((pos,i) => {
+    const nd = new THREE.Mesh(new THREE.SphereGeometry(0.14,12,12), pPlainMat(0x7dc48a));
+    nd.position.set(pos[0], pos[1]+0.58, pos[2]);
+    nd.userData = { baseY:pos[1]+0.58, phase:i*1.15 };
+    g.add(nd); g.userData.nodes.push(nd);
+  });
+  g.add(pMakeGrid(10,10,-0.52)); return g;
+}
+
+const PIPE_GROUPS = [pBuildS1(), pBuildS2(), pBuildS3(), pBuildS4(), pBuildS5()];
+var pActiveGrp = PIPE_GROUPS[0], pFadingGrp = null, pFadeVal = 1, pFading = false;
+pRoot.add(pActiveGrp); pSetOpacity(pActiveGrp, 1);
+
+function pipeGoTo(idx) {
+  if (idx === pipeStep || pFading) return;
+  pipeStep = idx; pipeRenderUI(idx);
+  pFadingGrp = pActiveGrp;
+  pActiveGrp = PIPE_GROUPS[idx];
+  pRoot.add(pActiveGrp); pSetOpacity(pActiveGrp, 0);
+  pFadeVal = 0; pFading = true;
+}
+
+// drag orbit
+let pDrag=false, pLx=0, pLy=0, pRotX=0.12, pRotY=0;
+pCanvas.addEventListener('mousedown',  e=>{pDrag=true;pLx=e.clientX;pLy=e.clientY;});
+pCanvas.addEventListener('touchstart', e=>{if(e.touches.length===1){pDrag=true;pLx=e.touches[0].clientX;pLy=e.touches[0].clientY;}});
+window.addEventListener('mouseup',  ()=>pDrag=false);
+window.addEventListener('touchend', ()=>pDrag=false);
+window.addEventListener('mousemove', e=>{
+  if(!pDrag)return;
+  pRotY+=(e.clientX-pLx)*0.008;
+  pRotX=Math.max(-0.55,Math.min(0.75,pRotX+(e.clientY-pLy)*0.006));
+  pLx=e.clientX;pLy=e.clientY;
+});
+window.addEventListener('touchmove', e=>{
+  if(!pDrag||e.touches.length!==1)return;
+  pRotY+=(e.touches[0].clientX-pLx)*0.008;
+  pRotX=Math.max(-0.55,Math.min(0.75,pRotX+(e.touches[0].clientY-pLy)*0.006));
+  pLx=e.touches[0].clientX;pLy=e.touches[0].clientY;
+});
+
+function pResize() {
+  const w=pCanvas.clientWidth, h=pCanvas.clientHeight;
+  pRenderer.setSize(w,h,false);
+  pCamera.aspect=w/h; pCamera.updateProjectionMatrix();
+}
+window.addEventListener('resize', pResize);
+pResize();
+
+(function pAnimate() {
+  requestAnimationFrame(pAnimate);
+  const t = pClock.getElapsedTime();
+  if (pFading) {
+    pFadeVal = Math.min(1, pFadeVal+0.05);
+    pSetOpacity(pActiveGrp, pFadeVal);
+    if (pFadingGrp) pSetOpacity(pFadingGrp, 1-pFadeVal);
+    if (pFadeVal>=1) {
+      pFading=false;
+      if(pFadingGrp){pRoot.remove(pFadingGrp);pFadingGrp=null;}
+    }
+  }
+  if (!pDrag) pRotY += 0.0025;
+  pRoot.rotation.x = pRotX;
+  pRoot.rotation.y = pRotY;
+
+  if (pActiveGrp===PIPE_GROUPS[1] && PIPE_GROUPS[1].userData.dots)
+    PIPE_GROUPS[1].userData.dots.forEach(d=>{
+      d.userData.t=(d.userData.t+d.userData.spd)%1;
+      d.position.lerpVectors(d.userData.origin,d.userData.target,d.userData.t);
+    });
+  if (pActiveGrp===PIPE_GROUPS[3] && PIPE_GROUPS[3].userData.mods)
+    PIPE_GROUPS[3].userData.mods.forEach(c=>{
+      c.position.y=c.userData.baseY+Math.sin(t*1.25+c.userData.phase)*0.18;
+      c.rotation.y+=0.011; c.rotation.x+=0.005;
+    });
+  if (pActiveGrp===PIPE_GROUPS[4] && PIPE_GROUPS[4].userData.nodes)
+    PIPE_GROUPS[4].userData.nodes.forEach(n=>{
+      n.position.y=n.userData.baseY+Math.sin(t*1.8+n.userData.phase)*0.09;
+    });
+
+  pRenderer.render(pScene, pCamera);
+}());
+</script>
+
+<script>
 async function sub(iid, oid) {
   const el  = document.getElementById(iid);
   const ok  = document.getElementById(oid);
@@ -365,17 +868,4 @@ async function sub(iid, oid) {
 
     if (data.success) {
       el.parentElement.style.display = 'none';
-      ok.style.display = 'block';
-    } else {
-      const msg = data.message || 'something went wrong. try again.';
-      if (err) { err.textContent = msg; err.style.display = 'block'; }
-      btn.disabled = false;
-    }
-  } catch {
-    if (err) { err.textContent = 'network error. please try again.'; err.style.display = 'block'; }
-    btn.disabled = false;
-  }
-}
-</script>
-</body>
-</html>
+      ok.style.display = 'bloc

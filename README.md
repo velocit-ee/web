@@ -20,6 +20,23 @@ a lightweight node.js + express backend that powers:
 
 ---
 
+## changelog
+
+### 2026-04-04 — pipeline section + three.js animation
+
+added a new interactive **deployment pipeline** section to `public/index.html`:
+
+- new `#pipeline` section between the "problem" and "how it works" sections
+- 5-step walkthrough of the deployment process: bare metal → pxe boot → os provision → terraform/ansible → live stack
+- each step has a title, CLI command, description, and key/value metadata
+- left panel: tabbed navigation with prev/next buttons and a progress bar; also responds to arrow keys when in view
+- right panel: interactive three.js 3D scene — a different 3D visualization per step, drag to rotate
+- step scenes: cold server (unlit), pxe network discovery (animated packet dots), os layer stack, floating iac modules (animated), multi-server cluster
+- `three.js r128` loaded from cdnjs
+- added `pipeline` link to the top nav
+
+---
+
 ## stack
 
 - node.js 22 LTS + express 4.x
