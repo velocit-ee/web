@@ -22,6 +22,11 @@ a lightweight node.js + express backend that powers:
 
 ## changelog
 
+### 2026-04-04 — pipeline animation fix + github org link
+
+- added `https://cdnjs.cloudflare.com` to helmet's `scriptSrc` CSP directive in `server.js` — this was blocking three.js from loading (CDN scripts were silently rejected)
+- updated both github links (nav + footer) to point to the org page `https://github.com/velocit-ee` instead of the web repo
+
 ### 2026-04-04 — pipeline section + three.js animation
 
 added a new interactive **deployment pipeline** section to `public/index.html`:
