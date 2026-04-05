@@ -95,3 +95,11 @@ mit — see [LICENSE](LICENSE).
 ### 2026-04-05 — updated landing page (index (3).html)
 
 deployed updated `public/index.html` prepared by web personality. CF obfuscations cleaned before deploy.
+
+### 2026-04-05 — pipeline layout fixes + terminal wrapping
+
+- replaced `height:calc(100vh - ...)` on `.pipe-main` with a clean fixed `height:520px` — old calc was inaccurate and caused the section to overflow on most screen sizes
+- pipeline left panel: fixed width reduced (360→340px), `pipe-cmd` now wraps instead of truncating, tabs scroll horizontally on narrow panels
+- terminal block: `white-space:nowrap` → `pre-wrap` + `word-break:break-word` — lines now fit without horizontal scrolling
+- added 860px tablet breakpoint so `.sol-grid` stacks before the terminal gets squashed
+- pipeline stacks to vertical layout at 900px (was 820px) for better laptop sizing
