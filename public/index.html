@@ -40,6 +40,8 @@ h1 .hl2{color:var(--brown-hi);}
 .wl-wrap input:focus{border-color:var(--green);}
 .btn-primary{background:var(--green);color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;font-weight:600;padding:0.6rem 1.25rem;border:none;cursor:pointer;white-space:nowrap;transition:background 0.2s;}
 .btn-primary:hover{background:var(--green-hi);}
+.btn-secondary{background:transparent;color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;font-weight:600;padding:0.6rem 1.25rem;border:1px solid var(--green);cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+.btn-secondary:hover{background:var(--green);color:var(--bg);}
 .wl-note{color:var(--dim);font-size:0.7rem;}
 .wl-note::before{content:'> ';}
 .form-ok{display:none;color:var(--green-hi);font-size:0.78rem;margin-top:0.5rem;}
@@ -288,7 +290,7 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
     <a href="#solution" class="nav-text-link">how it works</a>
     <a href="#pricing" class="nav-text-link">pricing</a>
     <a href="https://github.com/velocit-ee" target="_blank" class="nav-text-link">github</a>
-    <button class="btn-nav" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">join waitlist</button>
+    <a href="https://github.com/velocit-ee/core/blob/main/vme/docs/getting-started.md" target="_blank" class="btn-nav" style="text-decoration:none;">get started</a>
   </div>
 </nav>
 
@@ -298,13 +300,17 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
     <h1 class="fu d1s">networks that<br/><span class="hl">survive anyone</span><br/><span class="hl2">leaving.</span></h1>
     <p class="hero-sub fu d2s">Most small orgs run on networks <strong>one person built and only they understand.</strong> velocit.ee is a modular deployment platform that takes hardware from bare metal to a fully documented, running network stack — one command at a time.</p>
     <div class="fu d3s">
-      <div class="wl-wrap">
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+        <a href="https://github.com/velocit-ee/core/blob/main/vme/docs/getting-started.md" target="_blank" class="btn-primary" style="text-decoration:none;">get started with VME →</a>
+        <a href="https://github.com/velocit-ee/core" target="_blank" class="btn-secondary" style="text-decoration:none;">github</a>
+      </div>
+      <div class="wl-wrap" style="margin-top:0.5rem;">
         <input type="email" id="hero-email" placeholder="you@example.com"/>
         <button class="btn-primary" onclick="sub('hero-email','hero-ok')">join waitlist</button>
       </div>
       <div class="form-ok" id="hero-ok">you're on the list.</div>
       <div id="hero-err" style="display:none;color:#c06a4a;font-size:0.72rem;font-family:'IBM Plex Mono',monospace;margin-top:0.35rem;"></div>
-      <div class="wl-note">self-hosted is free forever. no card, ever.</div>
+      <div class="wl-note">self-hosted is free forever. VME is available now.</div>
     </div>
     <div class="stats fu d4s">
       <div><div class="stat-val">1<em> cmd</em></div><div class="stat-lbl">full rebuild from bare metal</div></div>
@@ -465,7 +471,7 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
     <div class="rmap">
       <div class="rmap-item">
         <div class="rmap-node now">01</div>
-        <div class="rmap-content"><h3>VME — metal provisioning engine — now</h3><p>PXE boot any x86_64 hardware, install Proxmox VE or Ubuntu Server fully unattended, write a handoff manifest, tear down the seed stack. first public release. this is the foundation everything else builds on.</p></div>
+        <div class="rmap-content"><h3>VME — metal provisioning engine — available now</h3><p>PXE boot any x86_64 hardware, install Proxmox VE or Ubuntu Server fully unattended, write a handoff manifest, tear down the seed stack. this is the foundation everything else builds on. <a href="https://github.com/velocit-ee/core/blob/main/vme/docs/getting-started.md" target="_blank" style="color:var(--accent)">get started →</a></p></div>
       </div>
       <div class="rmap-item">
         <div class="rmap-node">02</div>
@@ -485,9 +491,14 @@ footer{border-top:1px solid var(--border);padding:1.6rem 2rem;display:flex;align
 
 <section id="cta">
   <div class="wrap">
-    <div class="sec-label">early access</div>
-    <h2>be first when we ship.</h2>
-    <p>building in public. join the waitlist for early access — no cost until you're ready.</p>
+    <div class="sec-label">get started</div>
+    <h2>VME is available now.</h2>
+    <p>the metal provisioning engine is open source and ready to use. install it on any Ubuntu or Debian machine and provision your first server in minutes.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;">
+      <a href="https://github.com/velocit-ee/core/blob/main/vme/docs/getting-started.md" target="_blank" class="btn-primary" style="text-decoration:none;">getting started guide →</a>
+      <a href="https://github.com/velocit-ee/core" target="_blank" class="btn-secondary" style="text-decoration:none;">view on github</a>
+    </div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1.5rem;">VNE, VSE, and VLE are in development. join the waitlist for updates.</p>
     <div class="cta-form">
       <input type="email" id="cta-email" placeholder="you@example.com"/>
       <button class="btn-primary" onclick="sub('cta-email','cta-ok')">join waitlist</button>
