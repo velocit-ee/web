@@ -1,0 +1,39 @@
+---
+interface Props {
+  title?: string;
+  status?: "ok" | "warn" | "crit" | "muted";
+  meta?: string;
+  class?: string;
+  href?: string;
+}
+const {
+  title = "",
+  status = "muted",
+  meta = "",
+  class: className = "",
+  href,
+} = Astro.props;
+const dotClass = {
+  ok:    "dot dot-ok",
+  warn:  "dot dot-warn",
+  crit:  "dot dot-crit",
+  muted: "dot",
+}[status];
+const Tag = href ? "a" : "div";
+---
+<Tag
+  class:list={["tile", className]}
+  {...(href ? { href, ...(href.startsWith("http") ? { target: "_blank", rel: "noopener" } : {}) } : {})}
+>
+  {(title || meta) && (
+    <div class="tile-bar">
+      <span class={dotClass} aria-hidden="true"></span>
+      {title && <span>{title}</span>}
+      <span class="spacer"></span>
+      {meta && <span class="text-muted normal-case tracking-normal">{meta}</span>}
+    </div>
+  )}
+  <div class="p-5 lg:p-6">
+    <slot />
+  </div>
+</Tag>

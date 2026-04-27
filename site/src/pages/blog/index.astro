@@ -1,0 +1,56 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+function fmt(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+---
+<Base title="blog — velocit.ee" description="Engineering notes, release announcements, and field reports from velocitee.">
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// blog</p>
+      <h1 class="mt-3 font-mono text-4xl md:text-5xl text-cream tracking-tightest leading-[1.05] max-w-[28ch]">
+        engineering notes,<br/>release notes, field reports.
+      </h1>
+      <p class="mt-5 max-w-[58ch] font-sans font-light text-muted text-sm leading-relaxed">
+        Long-form posts go here. RSS at <a href="/blog/rss.xml" class="text-green-hi underline-offset-2 hover:text-cream hover:underline">/blog/rss.xml</a> (when we ship it).
+      </p>
+    </div>
+  </section>
+
+  <section class="border-t border-border bg-surface/30">
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-12">
+      <ul class="divide-y divide-border border-y border-border">
+        {posts.map((p) => (
+          <li>
+            <a href={`/blog/${p.slug}`} class="block py-6 group hover:bg-surface2 transition-colors px-3 -mx-3">
+              <div class="flex items-baseline gap-4 flex-wrap">
+                <time class="font-log text-2xs text-dim tracking-wider w-24 shrink-0">{fmt(p.data.pubDate)}</time>
+                <h2 class="text-cream font-mono text-lg font-semibold tracking-tightest group-hover:text-green-hi transition-colors">
+                  {p.data.title}
+                </h2>
+              </div>
+              <p class="mt-2 ml-28 text-muted font-sans text-sm leading-relaxed max-w-[64ch]">
+                {p.data.description}
+              </p>
+              {p.data.tags.length > 0 && (
+                <div class="mt-3 ml-28 flex gap-1.5 text-2xs font-mono">
+                  {p.data.tags.map((t) => (
+                    <span class="text-dim">#{t}</span>
+                  ))}
+                </div>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+      {posts.length === 0 && (
+        <p class="text-muted font-sans py-12 text-center">no posts yet — the first one is coming soon.</p>
+      )}
+    </div>
+  </section>
+</Base>

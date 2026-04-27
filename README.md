@@ -1,105 +1,129 @@
 # velocit-ee/web
 
-the velocit.ee landing page and waitlist backend.
+The velocit.ee marketing site and waitlist backend.
 
 ```
-status: live at velocit.ee
-license: mit
+status:   live at velocit.ee
+frontend: Astro 4 + Tailwind (./site)
+backend:  Express on Node 22 (./)
+license:  MIT (site config); content under AGPL v3
 ```
 
 ---
 
-## what it is
+## What it is
 
-a lightweight node.js + express backend that powers:
-- waitlist signup with email deduplication and rate limiting
-- resend email integration (waitlist notifications + audience sync)
-- admin dashboard at `/admin` with bcrypt-protected HTTP basic auth
-- health endpoint at `/health`
-- the landing page static files
+A two-layer monorepo:
 
----
+```
+web/
+  site/              ← Astro project (multi-page site, builds to site/dist)
+  routes/            ← Express API routes
+  middleware/        ← validation, rate-limit, auth
+  server.js          ← serves site/dist statically + handles /api/*
+  setup.sh           ← idempotent VM provisioning script
+  ecosystem.config.js← PM2 config
+```
 
-## changelog
+**Why both?** Astro is a static-site generator — fast, distinctive, multi-page.
+Express handles the dynamic bits the static site can't: the waitlist endpoint,
+the contact form, the admin dashboard, the health probe.
 
-### 2026-04-04 — pipeline animation fix + github org link
-
-- added `https://cdnjs.cloudflare.com` to helmet's `scriptSrc` CSP directive in `server.js` — this was blocking three.js from loading (CDN scripts were silently rejected)
-- updated both github links (nav + footer) to point to the org page `https://github.com/velocit-ee` instead of the web repo
-
-### 2026-04-04 — pipeline section + three.js animation
-
-added a new interactive **deployment pipeline** section to `public/index.html`:
-
-- new `#pipeline` section between the "problem" and "how it works" sections
-- 5-step walkthrough of the deployment process: bare metal → pxe boot → os provision → terraform/ansible → live stack
-- each step has a title, CLI command, description, and key/value metadata
-- left panel: tabbed navigation with prev/next buttons and a progress bar; also responds to arrow keys when in view
-- right panel: interactive three.js 3D scene — a different 3D visualization per step, drag to rotate
-- step scenes: cold server (unlit), pxe network discovery (animated packet dots), os layer stack, floating iac modules (animated), multi-server cluster
-- `three.js r128` loaded from cdnjs
-- added `pipeline` link to the top nav
+Express in production serves the Astro build under `/` and the API under
+`/api/*`. There is no SPA hydration — every page is a real HTML file.
 
 ---
 
-## stack
+## Pages (in `site/src/pages/`)
 
-- node.js 22 LTS + express 4.x
-- postgresql 16 (unix socket, no tcp, no password)
-- pm2 + systemd (production process management)
-- cloudflare tunnel (public access, no open ports)
-- helmet, express-rate-limit, bcryptjs, validator, resend sdk
+| Route                | Purpose                                          |
+|----------------------|--------------------------------------------------|
+| `/`                  | Landing — hero, problem, how-it-works, principles, CTA |
+| `/engines`           | Pipeline overview — all four engines              |
+| `/engines/vme`       | VME — metal · live                                |
+| `/engines/vne`       | VNE — network · live (initial)                    |
+| `/engines/vse`       | VSE — services · planned, with waitlist           |
+| `/engines/vle`       | VLE — lifecycle · planned                         |
+| `/pricing`           | Tier comparison + FAQ                             |
+| `/about`             | Mission, team, principles, roadmap                |
+| `/blog`              | Blog index (content collection in `site/src/content/blog/`) |
+| `/blog/<slug>`       | Individual posts (Markdown / MDX)                 |
+| `/contact`           | Contact form (POSTs `/api/contact`)               |
+| `/legal/privacy`     | Privacy notice                                    |
+| `/legal/terms`       | Terms of use                                      |
+| `/404`               | Custom 404                                        |
+
+The Astro project pulls brand tokens (palette, fonts, voice) from
+`velocit-ee/.github/profile/BRAND.md` — keep them in sync.
 
 ---
 
-## running locally
+## API surface
+
+| Endpoint        | Method | Purpose |
+|-----------------|--------|---------|
+| `/api/waitlist` | POST   | Waitlist signup; rate-limited 3/15min/IP |
+| `/api/contact`  | POST   | Contact form to inquiries@velocit.ee; rate-limited 2/hr/IP |
+| `/admin`        | GET    | Admin dashboard (HTTP basic auth, bcrypt-hashed) |
+| `/health`       | GET    | Health probe |
+
+---
+
+## Local development
 
 ```bash
-git clone https://github.com/velocit-ee/web.git
-cd web
+# 1. Express deps
 npm install
-cp .env.example .env
-# edit .env — you need a resend api key and postgres running
-node server.js
+
+# 2. Astro deps + build
+npm run build           # site/dist is what Express serves
+
+# 3. Run the server
+cp .env.example .env    # fill in resend key, db connection, admin pw hash
+node server.js          # http://127.0.0.1:3000
 ```
 
-see `.env.example` for all required environment variables.
+For Astro-only iteration (no API):
+
+```bash
+npm run site:dev        # http://127.0.0.1:4321 — live reload
+```
 
 ---
 
-## deployment
+## Deployment
 
-the production instance runs on a dedicated VM (proxmox, ubuntu 24.04 LTS). see `setup.sh` for the full provisioning script — it's idempotent and can be re-run safely.
+Production runs on a dedicated Proxmox VM (Ubuntu 24.04, PM2 + systemd,
+Cloudflare Tunnel). Provisioning is fully scripted:
 
 ```bash
-# on the VM as root
+# on the VM, as root
 CLOUDFLARE_TUNNEL_TOKEN=<token> bash setup.sh
 ```
 
+`setup.sh` is idempotent — safe to re-run after a code change. It:
+
+1. Installs Node 22, PostgreSQL 16, NGINX, fail2ban, UFW, cloudflared.
+2. Creates the runtime user and clones the repo.
+3. Runs `npm ci --omit=dev` for the Express runtime.
+4. Runs `cd site && npm install && npm run build` to generate `site/dist`.
+5. Applies the database schema.
+6. Configures UFW (deny-all-inbound except SSH from the management VLAN).
+7. Starts PM2 and registers it with systemd.
+8. Boots the Cloudflare Tunnel.
+
 ---
 
-## security notes
+## Security
 
-- rate limited: 3 requests per IP per 15 minutes on the waitlist endpoint
-- no raw IPs stored — HMAC-SHA256 hash with a secret salt
-- admin password is bcrypt (cost 12) — never stored in plaintext
-- UFW blocks all inbound except SSH from the management VLAN
-- cloudflare tunnel: no ports open to the internet
+- `helmet` with a tight CSP — no third-party origins, self-hosted fonts.
+- Rate limits — 3/15min on `/api/waitlist`, 2/hr on `/api/contact`.
+- IPs are HMAC-SHA-256-hashed before storage; raw IPs never hit disk.
+- Admin password is bcrypt cost 12.
+- `app.set('trust proxy', 1)` so we read the real client IP from the
+  Cloudflare `CF-Connecting-IP` header instead of `127.0.0.1`.
+- UFW blocks all inbound except SSH from the management VLAN.
+- Cloudflare Tunnel terminates publicly; no ports are open on the VM.
 
----
-
-## license
-
-mit — see [LICENSE](LICENSE).
-
-### 2026-04-05 — updated landing page (index (3).html)
-
-deployed updated `public/index.html` prepared by web personality. CF obfuscations cleaned before deploy.
-
-### 2026-04-05 — pipeline layout fixes + terminal wrapping
-
-- replaced `height:calc(100vh - ...)` on `.pipe-main` with a clean fixed `height:520px` — old calc was inaccurate and caused the section to overflow on most screen sizes
-- pipeline left panel: fixed width reduced (360→340px), `pipe-cmd` now wraps instead of truncating, tabs scroll horizontally on narrow panels
-- terminal block: `white-space:nowrap` → `pre-wrap` + `word-break:break-word` — lines now fit without horizontal scrolling
-- added 860px tablet breakpoint so `.sol-grid` stacks before the terminal gets squashed
-- pipeline stacks to vertical layout at 900px (was 820px) for better laptop sizing
+See [BRAND.md](https://github.com/velocit-ee/.github/blob/main/profile/BRAND.md)
+for design and tone standards.

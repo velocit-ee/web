@@ -1,0 +1,163 @@
+---
+import Base from "../layouts/Base.astro";
+
+const tiers = [
+  {
+    name: "self-host",
+    price: "free",
+    sub: "open source · always",
+    badge: null,
+    features: [
+      "all four engines, all backends",
+      "self-hostable on any hardware",
+      "AGPL v3 — modify, fork, ship",
+      "community support via github",
+    ],
+    cta: { label: "github", href: "https://github.com/velocit-ee/core", external: true },
+  },
+  {
+    name: "starter",
+    price: "€19",
+    suffix: "/month",
+    sub: "for one cluster",
+    badge: null,
+    features: [
+      "everything in self-host",
+      "AI config-gen for velocitee.yml",
+      "hosted config registry",
+      "one cluster, unlimited targets",
+      "email support · 48h",
+    ],
+    cta: { label: "join waitlist", href: "/contact" },
+  },
+  {
+    name: "team",
+    price: "€89",
+    suffix: "/month",
+    sub: "small orgs and labs",
+    badge: "most popular",
+    features: [
+      "everything in starter",
+      "up to 5 clusters",
+      "team accounts · 5 seats",
+      "drift alerts via email/slack",
+      "priority email support · 24h",
+    ],
+    cta: { label: "join waitlist", href: "/contact" },
+    highlight: true,
+  },
+  {
+    name: "enterprise",
+    price: "custom",
+    sub: "regulated, audited, supported",
+    badge: null,
+    features: [
+      "everything in team",
+      "unlimited clusters & seats",
+      "commercial license (no AGPL)",
+      "private deployments / air-gapped",
+      "named support engineer · SLA",
+    ],
+    cta: { label: "contact us", href: "/contact" },
+  },
+];
+---
+<Base title="pricing — velocit.ee" description="Self-host the engines for free, forever. Pay for the SaaS layer when you want AI config-gen, hosted registry, drift alerts, and support.">
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// pricing</p>
+      <h1 class="mt-3 font-mono text-4xl md:text-5xl text-cream tracking-tightest leading-[1.05] max-w-[26ch]">
+        the engines are free.<br/>pay for the help, not the tool.
+      </h1>
+      <p class="mt-5 max-w-[58ch] font-sans font-light text-muted text-sm leading-relaxed">
+        Every velocitee engine is open source under AGPL v3. Self-host the whole stack, never give us a cent.
+        Our paid tiers cover the SaaS layer — AI config generation, hosted config registry, drift alerts,
+        team accounts, and support — for users who want them.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-y border-border bg-surface/30">
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <ul class="grid gap-px bg-border border border-border md:grid-cols-2 xl:grid-cols-4">
+        {tiers.map((t) => (
+          <li class={t.highlight ? "bg-surface2 relative" : "bg-surface relative"}>
+            {t.badge && (
+              <span class="absolute top-0 right-3 -translate-y-1/2 bg-green text-bg text-2xs font-semibold tracking-widest px-2 py-1">
+                {t.badge}
+              </span>
+            )}
+            <div class="p-6 lg:p-7 h-full flex flex-col">
+              <p class="text-2xs text-muted tracking-widest uppercase">{t.name}</p>
+              <div class="mt-4 flex items-baseline gap-1">
+                <span class="text-cream font-mono text-3xl font-semibold tracking-tightest">{t.price}</span>
+                {t.suffix && <span class="text-muted text-xs font-mono">{t.suffix}</span>}
+              </div>
+              <p class="mt-1 text-2xs text-muted">{t.sub}</p>
+              <ul class="mt-6 space-y-2.5 flex-1">
+                {t.features.map((f) => (
+                  <li class="flex gap-2 text-2xs text-muted font-sans leading-relaxed">
+                    <span class="text-green shrink-0">+</span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={t.cta.href}
+                target={"external" in t.cta && t.cta.external ? "_blank" : undefined}
+                rel={"external" in t.cta && t.cta.external ? "noopener" : undefined}
+                class={
+                  t.highlight
+                    ? "mt-6 bg-green text-bg text-2xs font-semibold text-center px-3 py-2 hover:bg-green-hi transition-colors"
+                    : "mt-6 border border-green text-green-hi text-2xs font-semibold text-center px-3 py-2 hover:bg-green hover:text-bg transition-colors"
+                }
+              >
+                {t.cta.label} →
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// the obvious questions</p>
+      <h2 class="mt-3 font-mono text-3xl text-cream tracking-tightest leading-[1.1] max-w-[26ch]">
+        FAQ.
+      </h2>
+      <dl class="mt-10 grid gap-px bg-border border border-border md:grid-cols-2">
+        <div class="bg-surface p-6 lg:p-7">
+          <dt class="text-cream font-mono text-base font-semibold tracking-tightest mb-2">Why charge anything if it’s open source?</dt>
+          <dd class="text-muted text-sm font-sans leading-relaxed">
+            Because we have to pay rent. The engines are AGPL — yours forever, no strings.
+            The SaaS bits (AI config-gen, hosted registry) are real costs to run; that's where the price goes.
+          </dd>
+        </div>
+        <div class="bg-surface p-6 lg:p-7">
+          <dt class="text-cream font-mono text-base font-semibold tracking-tightest mb-2">What does a "cluster" mean?</dt>
+          <dd class="text-muted text-sm font-sans leading-relaxed">
+            One Proxmox cluster (or one bare-metal install for VME-only users). Inside that cluster,
+            VMs and services are unlimited.
+          </dd>
+        </div>
+        <div class="bg-surface p-6 lg:p-7">
+          <dt class="text-cream font-mono text-base font-semibold tracking-tightest mb-2">Is the AI config-gen really useful?</dt>
+          <dd class="text-muted text-sm font-sans leading-relaxed">
+            For first-time users, yes — it cuts the time-to-running-stack from "an afternoon of YAML" to
+            "a paragraph of intent". For power users, the velocitee.yml schema is short enough that hand-writing
+            it is fine.
+          </dd>
+        </div>
+        <div class="bg-surface p-6 lg:p-7">
+          <dt class="text-cream font-mono text-base font-semibold tracking-tightest mb-2">What about nonprofit / education pricing?</dt>
+          <dd class="text-muted text-sm font-sans leading-relaxed">
+            Email <a href="mailto:inquiries@velocit.ee" class="text-green-hi hover:text-cream underline-offset-2 hover:underline">inquiries@velocit.ee</a>
+            with a sentence about your org. Verified nonprofits and schools get team-tier features at starter pricing.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</Base>

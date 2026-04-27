@@ -1,5 +1,15 @@
 node_modules/
 .env
+.env.*
 *.log
 .DS_Store
 npm-debug.log*
+
+# Astro build artifacts
+site/dist/
+site/.astro/
+site/node_modules/
+
+# Operator scratch
+.venv/
+*.swp

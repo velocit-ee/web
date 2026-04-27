@@ -1,0 +1,150 @@
+---
+import Base from "../layouts/Base.astro";
+import Tile from "../components/Tile.astro";
+---
+<Base title="about — velocit.ee" description="Why velocitee exists, who it's for, and how we actually intend to keep the lights on.">
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// about</p>
+      <h1 class="mt-3 font-mono text-4xl md:text-5xl text-cream tracking-tightest leading-[1.05] max-w-[26ch]">
+        for the orgs whose IT is held together by one person who'll move on next year.
+      </h1>
+      <div class="mt-8 grid lg:grid-cols-[1.1fr,1fr] gap-12">
+        <div class="prose">
+          <p>
+            velocitee exists because the small organisations that need solid infrastructure the most are also
+            the ones that can least afford to maintain it. School STEM labs. Community nonprofits. Local
+            sports clubs. The infrastructure inevitably ends up being run by one volunteer who knows where
+            the bodies are buried — and when they leave, everything starts to crumble.
+          </p>
+          <p>
+            The existing tools assume an audience that doesn't match. Enterprise platforms assume a budget.
+            Open-source tooling assumes a sysadmin. Cloud SaaS assumes you're fine sending student data to
+            another continent. None of them are wrong; they just aren't aimed at us.
+          </p>
+          <p>
+            So we're building velocitee — an open-core deployment platform that takes hardware from bare
+            metal to a documented, running stack, with a single config file as the source of truth.
+            Open source under AGPL v3, self-hostable forever. The paid SaaS layer is for people who want
+            extra hands; the engines themselves are free.
+          </p>
+          <p>
+            <strong>The full pipeline is four engines</strong> — VME (metal), VNE (network), VSE (services),
+            VLE (lifecycle). We're shipping them in order. VME shipped first. VNE shipped next. We'll keep
+            shipping until the pipeline is done, and we'll keep documenting the whole thing as we go.
+          </p>
+        </div>
+
+        <aside class="space-y-5">
+          <Tile title="founder" status="ok">
+            <p class="text-cream font-mono text-base font-semibold">Finley Karras</p>
+            <p class="mt-1 text-muted text-2xs font-mono">student engineer · IT admin · germany</p>
+            <p class="mt-3 text-muted text-sm font-sans leading-relaxed">
+              Runs the IT infrastructure for a school STEM lab. Currently studying engineering. Builds and
+              maintains the entire velocitee stack — server, engines, docs, this website — out of a basement
+              in Germany.
+            </p>
+          </Tile>
+          <Tile title="who works on this" status="ok">
+            <p class="text-muted text-sm font-sans leading-relaxed">
+              One person, full-time-ish, plus contributors who've sent PRs. The community is small but the
+              engines are stable. You can <a href="https://github.com/velocit-ee" target="_blank" rel="noopener" class="text-green-hi underline-offset-2 hover:underline">read all our code</a>.
+            </p>
+          </Tile>
+          <Tile title="where it runs" status="ok">
+            <p class="text-muted text-sm font-sans leading-relaxed">
+              Production velocit.ee runs on a Proxmox VM behind Cloudflare Tunnel — same kind of setup
+              the engines themselves provision. We use our own tools.
+            </p>
+          </Tile>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-border bg-surface/30">
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// principles in practice</p>
+      <h2 class="mt-3 font-mono text-3xl text-cream tracking-tightest leading-[1.1]">how we make decisions.</h2>
+      <ul class="mt-9 grid gap-6 lg:grid-cols-2">
+        <Tile title="01" status="ok">
+          <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">Correctness above all.</h3>
+          <p class="mt-2 text-muted text-sm font-sans leading-relaxed">
+            We'd rather ship one engine that works correctly than four engines that maybe work. Verification
+            is a hard gate — the engines refuse to write a manifest if checks fail.
+          </p>
+        </Tile>
+        <Tile title="02" status="ok">
+          <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">Lightweight.</h3>
+          <p class="mt-2 text-muted text-sm font-sans leading-relaxed">
+            Every layer of indirection earns its keep. Where we can ship a single Python module, we ship
+            a single Python module. The engines aren't there to be impressive — they're there to disappear.
+          </p>
+        </Tile>
+        <Tile title="03" status="ok">
+          <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">Provisioner-agnostic.</h3>
+          <p class="mt-2 text-muted text-sm font-sans leading-relaxed">
+            We don't pick favourites. Use OpenTofu, use Ansible, use our native Python runner, use Pulumi
+            (when someone writes that renderer). The schema doesn't change.
+          </p>
+        </Tile>
+        <Tile title="04" status="ok">
+          <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">Open core, AGPL forever.</h3>
+          <p class="mt-2 text-muted text-sm font-sans leading-relaxed">
+            We will never relicense the engines from AGPL to anything more restrictive. If the company
+            disappears tomorrow, the engines are still yours, still maintained by you and the community.
+          </p>
+        </Tile>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// roadmap</p>
+      <h2 class="mt-3 font-mono text-3xl text-cream tracking-tightest leading-[1.1]">where we are. where we're going.</h2>
+      <ol class="mt-10 relative">
+        <li class="flex gap-6 pb-10 relative before:absolute before:left-[14px] before:top-7 before:bottom-0 before:w-px before:bg-gradient-to-b before:from-green before:to-border">
+          <span class="bg-green text-bg w-7 h-7 inline-flex items-center justify-center text-2xs font-semibold shrink-0">01</span>
+          <div>
+            <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">VME — metal · live</h3>
+            <p class="mt-1 text-muted text-sm font-sans leading-relaxed max-w-[58ch]">
+              PXE boot any x86_64 hardware, install Proxmox VE or Ubuntu Server fully unattended.
+              Foundation everything else builds on. Stable.
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-6 pb-10 relative before:absolute before:left-[14px] before:top-7 before:bottom-0 before:w-px before:bg-gradient-to-b before:from-green before:to-border">
+          <span class="bg-green text-bg w-7 h-7 inline-flex items-center justify-center text-2xs font-semibold shrink-0">02</span>
+          <div>
+            <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">VNE — network · live (initial)</h3>
+            <p class="mt-1 text-muted text-sm font-sans leading-relaxed max-w-[58ch]">
+              OPNsense VM, VLANs, DHCP, DNS, firewall. Two backends ready, eleven reserved.
+              Iterating to "active" stability over the next release cycle.
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-6 pb-10 relative before:absolute before:left-[14px] before:top-7 before:bottom-0 before:w-px before:bg-gradient-to-b before:from-warn before:to-border">
+          <span class="bg-warn/80 text-bg w-7 h-7 inline-flex items-center justify-center text-2xs font-semibold shrink-0">03</span>
+          <div>
+            <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">VSE — services · next</h3>
+            <p class="mt-1 text-muted text-sm font-sans leading-relaxed max-w-[58ch]">
+              Containerised stacks on top of VNE’s network. Design phase. Alpha targets common nonprofit
+              workloads (Nextcloud + LDAP + monitoring as a starter bundle).
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-6 relative">
+          <span class="border border-border bg-surface text-muted w-7 h-7 inline-flex items-center justify-center text-2xs font-semibold shrink-0">04</span>
+          <div>
+            <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">VLE — lifecycle · planned</h3>
+            <p class="mt-1 text-muted text-sm font-sans leading-relaxed max-w-[58ch]">
+              Drift detection, auto-docs, single-command repair. Furthest out — design crystallises after
+              VSE has enough mileage to know what actually drifts.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,39 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+interface Props { post: CollectionEntry<"blog">; }
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+function fmt(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+---
+<Base title={`${post.data.title} — velocit.ee`} description={post.data.description}>
+  <article>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <a href="/blog" class="text-2xs text-muted hover:text-cream transition-colors font-mono">← all posts</a>
+      <header class="mt-6 border-b border-border pb-8">
+        <p class="label">// {post.data.tags.join(" · ") || "post"}</p>
+        <h1 class="mt-3 font-mono text-4xl md:text-5xl text-cream tracking-tightest leading-[1.05] max-w-[36ch]">
+          {post.data.title}
+        </h1>
+        <div class="mt-5 flex items-center gap-4 text-2xs text-muted font-mono">
+          <time>{fmt(post.data.pubDate)}</time>
+          <span class="text-dim">·</span>
+          <span>by {post.data.author}</span>
+        </div>
+      </header>
+
+      <section class="mt-10 prose">
+        <Content />
+      </section>
+    </div>
+  </article>
+</Base>

@@ -1,0 +1,284 @@
+@import "@fontsource/ibm-plex-mono/300.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
+@import "@fontsource/ibm-plex-sans/300.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Tokens. Mirrors tailwind.config.mjs — exposed as CSS custom properties
+   for places where Tailwind utilities aren't ergonomic (e.g. ::selection,
+   inline SVG fills, generated content).
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  --bg:        #0b0e09;
+  --surface:   #111510;
+  --surface2:  #171d15;
+  --border:    #232d1f;
+  --green:     #5a9e6a;
+  --green-hi:  #7dc48a;
+  --brown:     #9b7a4e;
+  --brown-hi:  #c4a06a;
+  --cream:     #d4ccb4;
+  --text:      #b8c4a8;
+  --muted:     #5e7055;
+  --dim:       #3a4a34;
+  --ok:        #7dc48a;
+  --warn:      #c4a06a;
+  --crit:      #a85a5a;
+
+  /* Spatial system — terminal column units (8ch, 16ch …). */
+  --col: 8ch;
+
+  color-scheme: dark;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Base
+   ───────────────────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-feature-settings: "ss01", "ss02";
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--green); color: var(--bg); }
+
+  /* Headings — terminal heading prefix. The `#`/`##` glyphs are decorative,
+     they don't break copy/paste because they're inserted via ::before with
+     speak: none. */
+  h1, h2, h3, h4 {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--cream);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--cream); }
+
+  /* Default focus ring — visible on dark backgrounds */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--green), 0 0 0 4px rgba(125,196,138,0.25);
+  }
+
+  /* Form elements — inherit the font, kill default appearance. */
+  input, textarea, select, button {
+    font: inherit;
+    color: inherit;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  input::placeholder, textarea::placeholder { color: var(--dim); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Atmosphere
+     - subtle hairline grid covering the whole page
+     - one slow scanline drifting from top to bottom
+     - both extremely low-contrast — this is *atmosphere*, not noise
+   ───────────────────────────────────────────────────────────────────────── */
+.atmosphere {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.atmosphere::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, #1a2218 1px, transparent 1px),
+    linear-gradient(to bottom, #1a2218 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.45;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+.atmosphere::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 30vh;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(125,196,138,0.025) 45%,
+    rgba(125,196,138,0.06) 50%,
+    rgba(125,196,138,0.025) 55%,
+    transparent 100%
+  );
+  animation: scanline 12s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .atmosphere::after { animation: none; opacity: 0; }
+}
+@keyframes scanline {
+  0%   { transform: translateY(-30vh); }
+  100% { transform: translateY(120vh); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Tile — the recurring "Proxmox panel" UI primitive. Used for engine cards,
+   pricing tiers, log dumps. The bar at the top is the panel chrome.
+   ───────────────────────────────────────────────────────────────────────── */
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  position: relative;
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+.tile:hover { border-color: var(--green); }
+.tile-bar {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  padding: 0.45rem 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.66rem;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tile-bar .dot {
+  width: 6px; height: 6px; border-radius: 999px;
+  background: var(--dim);
+}
+.tile-bar .dot-ok   { background: var(--ok);   box-shadow: 0 0 6px rgba(125,196,138,0.6); }
+.tile-bar .dot-warn { background: var(--warn); }
+.tile-bar .dot-crit { background: var(--crit); }
+.tile-bar .spacer { flex: 1; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Modeline — the signature horizontal status strip. Sits above the footer.
+   Looks like a vim modeline. Includes a faux ticking clock and run id.
+   ───────────────────────────────────────────────────────────────────────── */
+.modeline {
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.66rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  padding: 0.45rem 1rem;
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.modeline .seg { display: inline-flex; align-items: center; gap: 0.4rem; }
+.modeline .seg-prim { color: var(--green-hi); }
+.modeline .seg-acc  { color: var(--brown-hi); }
+.modeline .pulse {
+  width: 5px; height: 5px; border-radius: 999px;
+  background: var(--ok);
+  animation: tick 2s ease-in-out infinite;
+}
+@keyframes tick {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Hero "terminal" — the centerpiece on the landing page.
+   A real-looking shell session that reveals lines on a stagger.
+   ───────────────────────────────────────────────────────────────────────── */
+.term-line {
+  opacity: 0;
+  animation: typeon 0.35s ease-out forwards;
+}
+@keyframes typeon {
+  0%   { opacity: 0; transform: translateY(2px); }
+  60%  { opacity: 1; transform: none; }
+  100% { opacity: 1; }
+}
+.cursor {
+  display: inline-block;
+  width: 0.55ch;
+  height: 1em;
+  background: var(--green);
+  vertical-align: -0.1em;
+  margin-left: 0.15ch;
+  animation: cursor 1.05s steps(1) infinite;
+}
+@keyframes cursor { 50% { opacity: 0; } }
+
+/* Prefer-reduced-motion respect */
+@media (prefers-reduced-motion: reduce) {
+  .term-line, .cursor { animation: none !important; opacity: 1 !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Heading prefix decoration — the "## " marker that frames every section
+   label. Replicates the landing-page mood at scale.
+   ───────────────────────────────────────────────────────────────────────── */
+.label {
+  display: inline-block;
+  color: var(--brown);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.label::before {
+  content: "## ";
+  color: var(--dim);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Prose — used inside MDX/blog posts.
+   ───────────────────────────────────────────────────────────────────────── */
+.prose {
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--text);
+  max-width: 68ch;
+}
+.prose p { margin: 0 0 1.1em; }
+.prose strong { color: var(--cream); font-weight: 500; }
+.prose code {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.86em;
+  background: var(--surface);
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--border);
+}
+.prose h2, .prose h3 {
+  margin-top: 2.4em;
+  margin-bottom: 0.6em;
+}
+.prose a {
+  color: var(--green-hi);
+  border-bottom: 1px solid color-mix(in oklab, var(--green) 50%, transparent);
+}
+.prose a:hover { color: var(--cream); border-bottom-color: var(--cream); }
+
+/* Utility: a thin animated underline used on nav items */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 1px;
+  background: var(--green);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.18s ease;
+}
+.nav-underline:hover::after,
+.nav-underline[aria-current="page"]::after {
+  transform: scaleX(1);
+}

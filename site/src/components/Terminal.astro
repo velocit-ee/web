@@ -1,0 +1,71 @@
+---
+// Animated terminal tile. Shows a fake `vne deploy` walkthrough with each
+// line revealing on a stagger. Pure CSS — no JS hydration.
+//
+// `lines` is an array of segments. Each segment is one of:
+//   { kind: "prompt", cwd, cmd }
+//   { kind: "out",    text, cls }     — log line, optional class for tinting
+//   { kind: "ok",     text }          — green PASS line
+//   { kind: "blank" }
+import type { TerminalLine as Line } from "./terminal.types";
+interface Props {
+  title?: string;
+  lines?: Line[];
+  showCursor?: boolean;
+  /** Base delay (ms) for the first line. Defaults to 200. */
+  startMs?: number;
+  /** Delay between lines (ms). Defaults to 80. */
+  stepMs?: number;
+}
+const {
+  title = "vne deploy",
+  lines = [],
+  showCursor = true,
+  startMs = 200,
+  stepMs = 80,
+} = Astro.props;
+---
+<div class="tile">
+  <div class="tile-bar">
+    <span class="dot dot-crit"></span>
+    <span class="dot dot-warn"></span>
+    <span class="dot dot-ok"></span>
+    <span class="spacer"></span>
+    <span>{title}</span>
+    <span class="spacer"></span>
+  </div>
+  <pre class="font-log text-2xs lg:text-xs leading-[1.85] text-muted p-5 lg:p-6 overflow-x-auto"
+       aria-label={title}>
+    {lines.map((line, i) => {
+      const delay = `${startMs + i * stepMs}ms`;
+      const style = `animation-delay: ${delay}`;
+      if (line.kind === "blank") return <div class="term-line" style={style}>&nbsp;</div>;
+      if (line.kind === "prompt") return (
+        <div class="term-line" style={style}>
+          <span class="text-brown-hi">{line.cwd ?? "~"}</span>
+          <span class="text-dim"> $ </span>
+          <span class="text-cream">{line.cmd}</span>
+        </div>
+      );
+      if (line.kind === "ok") return (
+        <div class="term-line" style={style}>
+          <span class="text-green-hi">[PASS]</span>
+          <span class="text-text"> {line.text}</span>
+        </div>
+      );
+      return (
+        <div class="term-line" style={style}>
+          <span class={line.cls ?? "text-muted"}>{line.text}</span>
+        </div>
+      );
+    })}
+    {showCursor && (
+      <div class="term-line"
+           style={`animation-delay: ${startMs + lines.length * stepMs}ms`}>
+        <span class="text-brown-hi">~</span>
+        <span class="text-dim"> $ </span>
+        <span class="cursor" aria-hidden="true"></span>
+      </div>
+    )}
+  </pre>
+</div>
