@@ -1,0 +1,65 @@
+---
+import Base from "../../layouts/Base.astro";
+const lastUpdated = "2026-04-28";
+---
+<Base title="privacy — velocit.ee" description="Privacy notice for velocit.ee. What we collect, what we don't, and how to ask us to forget you.">
+  <article>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// legal</p>
+      <h1 class="mt-3 font-mono text-4xl text-cream tracking-tightest">privacy notice</h1>
+      <p class="mt-3 text-2xs font-mono text-muted">last updated · {lastUpdated}</p>
+
+      <section class="mt-10 prose">
+        <h2>What we collect</h2>
+        <p>
+          velocit.ee is a marketing site for an open-source project. We are deliberately
+          minimal in what we collect:
+        </p>
+        <ul>
+          <li>
+            <strong>Waitlist email addresses</strong>, when you give them to us. Stored in our own
+            PostgreSQL database. Used to email you when we have something relevant to share.
+          </li>
+          <li>
+            <strong>Contact form submissions</strong> — the message contents you send, plus your
+            email address so we can reply. Routed to <code>inquiries@velocit.ee</code> and stored
+            in that mailbox.
+          </li>
+          <li>
+            <strong>Hashed IPs</strong> for rate-limiting. We hash incoming IP addresses with HMAC-SHA-256
+            before storing them. Raw IPs never hit disk.
+          </li>
+          <li>
+            <strong>Aggregate request logs</strong>, kept for 30 days for debugging and abuse handling. No tracking cookies.
+          </li>
+        </ul>
+
+        <h2>What we don’t collect</h2>
+        <p>
+          No analytics. No third-party scripts. No tracking pixels. No advertising IDs. We don't
+          fingerprint visitors, we don't sell mailing lists, and we don't share data with anyone
+          we haven't told you about below.
+        </p>
+
+        <h2>Who we share data with</h2>
+        <ul>
+          <li><strong>Resend</strong> — for sending email (waitlist updates, contact form replies, transactional notifications).</li>
+          <li><strong>Cloudflare</strong> — provides the tunnel that exposes velocit.ee publicly. They process request metadata as a CDN.</li>
+        </ul>
+        <p>That's it. No analytics providers, no ad networks, no third-party "consent management".</p>
+
+        <h2>Your rights</h2>
+        <p>
+          velocit.ee operates from Germany — the GDPR applies. You can ask us to delete your data,
+          export everything we have on you, or correct anything that's wrong, by emailing
+          <a href="mailto:inquiries@velocit.ee">inquiries@velocit.ee</a>. We aim to reply within 7 days.
+        </p>
+
+        <h2>Contact for privacy questions</h2>
+        <p>
+          <a href="mailto:legal@velocit.ee">legal@velocit.ee</a>.
+        </p>
+      </section>
+    </div>
+  </article>
+</Base>

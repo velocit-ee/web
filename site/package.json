@@ -1,0 +1,24 @@
+{
+  "name": "velocitee-site",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "velocit.ee — multi-page Astro site. Built static into ./dist; Express in ../ serves it.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/mdx": "^3.1.9",
+    "@astrojs/tailwind": "^5.1.2",
+    "@fontsource/ibm-plex-mono": "^5.1.0",
+    "@fontsource/ibm-plex-sans": "^5.1.0",
+    "@fontsource/jetbrains-mono": "^5.1.1",
+    "astro": "^4.16.18",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3"
+  }
+}

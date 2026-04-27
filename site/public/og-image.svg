@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- velocit.ee OpenGraph card. Static SVG; convert to og-image.png at 1200x630
+       before deploy. The visual matches the landing page palette and aesthetic. -->
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0b0e09"/>
+      <stop offset="100%" stop-color="#111510"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a2218" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.5"/>
+
+  <!-- top-left brand -->
+  <g transform="translate(80, 80)">
+    <text font-family="ui-monospace, 'IBM Plex Mono', monospace"
+          font-size="32" font-weight="600" fill="#d4ccb4">velocit<tspan fill="#7dc48a">.ee</tspan></text>
+  </g>
+
+  <!-- centered hero text -->
+  <g transform="translate(80, 250)">
+    <text font-family="ui-monospace, 'IBM Plex Mono', monospace"
+          font-size="22" fill="#5e7055" letter-spacing="2">## OPEN-CORE INFRASTRUCTURE</text>
+
+    <text y="80" font-family="ui-monospace, 'IBM Plex Mono', monospace"
+          font-size="64" font-weight="600" fill="#d4ccb4" letter-spacing="-2">networks that</text>
+    <text y="160" font-family="ui-monospace, 'IBM Plex Mono', monospace"
+          font-size="64" font-weight="600" fill="#7dc48a" letter-spacing="-2">survive anyone</text>
+    <text y="240" font-family="ui-monospace, 'IBM Plex Mono', monospace"
+          font-size="64" font-weight="600" fill="#c4a06a" letter-spacing="-2">leaving.</text>
+  </g>
+
+  <!-- bottom pipeline indicator -->
+  <g transform="translate(80, 540)">
+    <text font-family="ui-monospace, 'IBM Plex Mono', monospace"
+          font-size="18" fill="#5e7055">bare metal ──► VME ──► VNE ──► VSE ──► VLE ──► running stack</text>
+  </g>
+</svg>

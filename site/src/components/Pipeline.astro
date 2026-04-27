@@ -1,0 +1,51 @@
+---
+// ASCII pipeline diagram — load-bearing visual element on landing + engines
+// pages. Each "stage" is a tile glyph; the whole row is wrapped in a fixed-
+// width grid so it never reflows on mobile (it scrolls horizontally instead,
+// which is on-brand).
+interface Stage {
+  tag: string;
+  name: string;
+  status: "live" | "next" | "planned";
+  href: string;
+  blurb: string;
+}
+const stages: Stage[] = [
+  { tag: "VME", name: "metal",     status: "live",    href: "/engines/vme", blurb: "PXE + unattended OS install" },
+  { tag: "VNE", name: "network",   status: "live",    href: "/engines/vne", blurb: "OPNsense, VLANs, DHCP, DNS, firewall" },
+  { tag: "VSE", name: "services",  status: "next",    href: "/engines/vse", blurb: "containerised stack deployment" },
+  { tag: "VLE", name: "lifecycle", status: "planned", href: "/engines/vle", blurb: "drift detection, auto-docs, repair" },
+];
+const statusLabel = { live: "LIVE", next: "NEXT", planned: "PLANNED" };
+const statusClass = { live: "text-ok", next: "text-warn", planned: "text-muted" };
+---
+<div class="overflow-x-auto -mx-6 lg:mx-0">
+  <div class="min-w-[760px] lg:min-w-0 px-6 lg:px-0">
+    <!-- ASCII frame above the row, drawn with proper line characters -->
+    <pre aria-hidden="true" class="font-log text-2xs text-dim leading-[1] mb-2 whitespace-pre">
+{`bare metal ──►  VME  ──►  VNE  ──►  VSE  ──►  VLE  ──►  documented, running stack`}
+    </pre>
+    <ul class="grid grid-cols-4 gap-3 lg:gap-4">
+      {stages.map((s, i) => (
+        <li>
+          <a href={s.href}
+             class="tile block group p-4 lg:p-5 hover:!border-green hover:translate-y-[-1px]
+                    transition-all duration-200">
+            <div class="flex items-center justify-between text-2xs">
+              <span class={statusClass[s.status] + " tracking-widest font-medium"}>{statusLabel[s.status]}</span>
+              <span class="text-dim">{String(i + 1).padStart(2, "0")}</span>
+            </div>
+            <div class="mt-3 text-cream font-semibold text-xl lg:text-2xl tracking-tightest">
+              {s.tag}
+            </div>
+            <div class="mt-1 text-muted text-xs">{s.name}</div>
+            <p class="mt-3 text-muted text-2xs font-sans leading-relaxed">{s.blurb}</p>
+            <div class="mt-4 text-2xs text-green-hi/80 group-hover:text-green-hi transition-colors">
+              read →
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>

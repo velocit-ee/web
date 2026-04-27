@@ -1,11 +1,16 @@
 {
   "name": "velocitee",
-  "version": "1.0.0",
-  "description": "velocit.ee landing page backend — waitlist, admin dashboard, health endpoint",
+  "version": "1.1.0",
+  "description": "velocit.ee — Astro frontend in ./site, Express API + static server in this dir.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "site:dev": "cd site && npm run dev",
+    "site:install": "cd site && npm install",
+    "site:build": "cd site && npm run build",
+    "build": "npm run site:install && npm run site:build",
+    "postinstall": "echo 'Run `npm run build` to install + build the Astro site.'"
   },
   "engines": {
     "node": ">=22.0.0"

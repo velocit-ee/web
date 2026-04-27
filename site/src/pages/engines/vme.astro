@@ -1,0 +1,128 @@
+---
+import Base from "../../layouts/Base.astro";
+import Terminal from "../../components/Terminal.astro";
+import Tile from "../../components/Tile.astro";
+import type { TerminalLine } from "../../components/terminal.types";
+
+const lines: TerminalLine[] = [
+  { kind: "prompt", cwd: "~/vme/vme", cmd: "vme deploy" },
+  { kind: "out",    text: "Running pre-flight checks ..." },
+  { kind: "ok",     text: "interface           eth1 connected" },
+  { kind: "ok",     text: "docker              running" },
+  { kind: "ok",     text: "tftp port 69        free" },
+  { kind: "ok",     text: "disk space          18 GB free" },
+  { kind: "out",    text: "Ensuring proxmox-ve image is cached ..." },
+  { kind: "out",    text: "  ✓ proxmox-ve_8.4-1.iso (1.2 GB)" },
+  { kind: "out",    text: "Starting seed stack ..." },
+  { kind: "blank" },
+  { kind: "out",    text: "Power on the target machine now.", cls: "text-cream" },
+  { kind: "out",    text: "Watching for key events. Full logs → ~/.velocitee/logs/" },
+  { kind: "out",    text: "[10:32:45]  Target on network       MAC 00:0c:29:0a:66:5e" },
+  { kind: "out",    text: "[10:32:46]  iPXE bootloader sent    via TFTP" },
+  { kind: "out",    text: "[10:32:48]  Kernel downloaded       65 MB" },
+  { kind: "out",    text: "[10:32:50]  RAM disk downloaded     420 MB" },
+  { kind: "out",    text: "[10:34:02]  OS image downloaded     proxmox-ve_8.4-1.iso  (1.2 GB)" },
+  { kind: "out",    text: "[10:38:11]  Installer active        disk partitioning in progress" },
+  { kind: "out",    text: "[10:42:44]  vme-provision-complete", cls: "text-green-hi" },
+];
+---
+<Base title="VME — metal · velocit.ee" description="VME — Velocitee Metal Provisioning Engine. PXE boot any x86_64 hardware, install Proxmox VE or Ubuntu Server fully unattended.">
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <a href="/engines" class="text-2xs text-muted hover:text-cream transition-colors font-mono">← engines</a>
+      <div class="mt-4 flex items-baseline gap-3">
+        <span class="text-2xs text-ok font-medium tracking-widest">PHASE 1 · LIVE</span>
+      </div>
+      <h1 class="mt-2 font-mono text-5xl md:text-6xl text-cream tracking-tightest leading-[1] flex items-baseline gap-4 flex-wrap">
+        <span>VME</span>
+        <span class="text-muted text-2xl md:text-3xl">— metal</span>
+      </h1>
+      <p class="mt-6 max-w-[60ch] font-sans font-light text-text leading-relaxed">
+        Plug a target machine in, point it at the seed stack, walk away. VME PXE-boots the hardware,
+        runs an unattended OS install, and writes a structured handoff manifest the next engine reads.
+      </p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="https://docs.velocit.ee/vme/getting-started/"
+           class="bg-green text-bg font-semibold text-sm px-5 py-2.5 hover:bg-green-hi transition-colors">
+          getting-started guide →
+        </a>
+        <a href="https://github.com/velocit-ee/core/tree/main/vme" target="_blank" rel="noopener"
+           class="border border-green text-green-hi text-sm px-5 py-2.5 hover:bg-green hover:text-bg transition-colors">
+          source on github
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-border bg-surface/30">
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <Terminal title="vme deploy — annotated run" lines={lines} startMs={120} stepMs={60} />
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// what VME does</p>
+      <div class="mt-6 grid gap-6 lg:grid-cols-3">
+        <Tile title="seed stack" status="ok">
+          <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">dnsmasq + nginx + iPXE</h3>
+          <p class="mt-2 text-muted text-sm font-sans leading-relaxed">
+            Containerised seed stack runs on a laptop or Raspberry Pi connected to the provisioning switch.
+            DHCP, TFTP, HTTP — everything PXE needs, nothing you have to configure.
+          </p>
+        </Tile>
+        <Tile title="unattended install" status="ok">
+          <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">Proxmox VE / Ubuntu Server</h3>
+          <p class="mt-2 text-muted text-sm font-sans leading-relaxed">
+            Proxmox boots via kernel+initrd with HTTP ISO fetch and an embedded answer file.
+            Ubuntu uses cloud-init autoinstall. Fully hands-off — no console, no clicking through screens.
+          </p>
+        </Tile>
+        <Tile title="handoff manifest" status="ok">
+          <h3 class="text-cream font-mono text-base font-semibold tracking-tightest">structured json output</h3>
+          <p class="mt-2 text-muted text-sm font-sans leading-relaxed">
+            On success, VME writes a JSON document the next engine reads — hostname, IP, OS, SSH key, timing.
+            That's the contract: every engine reads the previous, appends its own record, hands off.
+          </p>
+        </Tile>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-border">
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16 grid lg:grid-cols-[1fr,1.4fr] gap-10">
+      <div>
+        <p class="label">// requirements</p>
+        <h2 class="mt-3 font-mono text-3xl text-cream tracking-tightest leading-[1.1]">small footprint, real hardware.</h2>
+      </div>
+      <Tile title="hardware compatibility" status="ok" meta="x86_64 only">
+        <dl class="grid grid-cols-2 gap-x-8 gap-y-4 font-mono text-2xs">
+          <div>
+            <dt class="text-dim">seed machine</dt>
+            <dd class="mt-1 text-text">Ubuntu 22.04+ / Debian 12+, Docker, ~10 GB free</dd>
+          </div>
+          <div>
+            <dt class="text-dim">target machine</dt>
+            <dd class="mt-1 text-text">x86_64 with PXE-capable NIC</dd>
+          </div>
+          <div>
+            <dt class="text-dim">network</dt>
+            <dd class="mt-1 text-text">unmanaged switch is enough</dd>
+          </div>
+          <div>
+            <dt class="text-dim">internet</dt>
+            <dd class="mt-1 text-text">required during ubuntu autoinstall (NAT'd through seed)</dd>
+          </div>
+          <div>
+            <dt class="text-dim">supported OS</dt>
+            <dd class="mt-1 text-text">Proxmox VE 8.x · Ubuntu Server 24.04</dd>
+          </div>
+          <div>
+            <dt class="text-dim">unsupported</dt>
+            <dd class="mt-1 text-text">Windows · macOS · arm64 (planned)</dd>
+          </div>
+        </dl>
+      </Tile>
+    </div>
+  </section>
+</Base>

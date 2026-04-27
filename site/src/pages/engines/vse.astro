@@ -1,0 +1,64 @@
+---
+import Base from "../../layouts/Base.astro";
+import WaitlistForm from "../../components/WaitlistForm.astro";
+import Tile from "../../components/Tile.astro";
+---
+<Base title="VSE — services (planned) · velocit.ee" description="VSE — Velocitee Services Engine. Containerised stack deployment on top of VNE-configured network. Planned phase 3.">
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <a href="/engines" class="text-2xs text-muted hover:text-cream transition-colors font-mono">← engines</a>
+      <div class="mt-4 flex items-baseline gap-3">
+        <span class="text-2xs text-warn font-medium tracking-widest">PHASE 3 · NEXT</span>
+      </div>
+      <h1 class="mt-2 font-mono text-5xl md:text-6xl text-cream tracking-tightest leading-[1] flex items-baseline gap-4 flex-wrap">
+        <span>VSE</span>
+        <span class="text-muted text-2xl md:text-3xl">— services</span>
+      </h1>
+      <p class="mt-6 max-w-[60ch] font-sans font-light text-text leading-relaxed">
+        Containerised stack deployment. Pick the services you need —
+        <strong class="text-cream font-medium">PostgreSQL, NGINX, Vaultwarden, Mealie, Nextcloud, monitoring, …</strong>
+        — declare them in <code class="text-green-hi">velocitee.yml</code>, deploy idempotently on top of VNE’s network.
+      </p>
+      <p class="mt-3 max-w-[60ch] font-sans text-sm text-muted leading-relaxed">
+        VSE is in design. The <code>velocitee.yml</code> shape isn't final. Want to be among the first to try it?
+        Join the waitlist below — we'll send one email when VSE alpha drops.
+      </p>
+      <div class="mt-8 max-w-[44ch]">
+        <WaitlistForm />
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-border bg-surface/30">
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-14">
+      <p class="label">// likely scope</p>
+      <h2 class="mt-3 font-mono text-2xl text-cream tracking-tightest">what we’re aiming for in alpha.</h2>
+      <ul class="mt-7 grid gap-6 lg:grid-cols-3">
+        <Tile title="batteries-included templates" status="warn">
+          <p class="text-muted text-sm font-sans leading-relaxed">
+            Pre-rolled stacks for common nonprofit needs: a "school IT" bundle (Nextcloud + LDAP + monitoring),
+            a "homelab" bundle, a "small business" bundle. One <code>preset:</code> line in your config.
+          </p>
+        </Tile>
+        <Tile title="docker compose under the hood" status="warn">
+          <p class="text-muted text-sm font-sans leading-relaxed">
+            Compose stacks per service, declarative templates, idempotent rollouts. Health-checked before VSE
+            considers a service "deployed". Same pattern as VNE’s verification gate.
+          </p>
+        </Tile>
+        <Tile title="reverse proxy + tls" status="warn">
+          <p class="text-muted text-sm font-sans leading-relaxed">
+            Caddy as the default — automatic TLS via Let’s Encrypt, sane defaults for HSTS and headers.
+            NGINX option for users who want it. Both terminate at the OPNsense LAN.
+          </p>
+        </Tile>
+      </ul>
+      <p class="mt-8 text-2xs text-muted font-mono max-w-[60ch] leading-relaxed">
+        <span class="text-warn">⚠</span> none of the above is committed yet. these are the design directions
+        we're exploring — open an issue at
+        <a href="https://github.com/velocit-ee/core/issues" target="_blank" rel="noopener" class="text-green-hi underline-offset-2 hover:underline">velocit-ee/core</a>
+        if you have strong opinions.
+      </p>
+    </div>
+  </section>
+</Base>

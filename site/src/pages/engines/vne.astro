@@ -1,0 +1,156 @@
+---
+import Base from "../../layouts/Base.astro";
+import Terminal from "../../components/Terminal.astro";
+import Tile from "../../components/Tile.astro";
+import type { TerminalLine } from "../../components/terminal.types";
+
+const provisioners = [
+  { name: "velocitee-native", status: "live", detail: "pure python · proxmox + opnsense REST · own state file" },
+  { name: "opentofu+ansible", status: "live", detail: "OpenTofu (bpg/proxmox 0.66.2) · Ansible (ansibleguy.opnsense 1.30.1)" },
+  { name: "ansible-only",      status: "stub",   detail: "reserved name" },
+  { name: "pulumi",            status: "stub",   detail: "reserved name" },
+  { name: "salt",              status: "stub",   detail: "reserved name" },
+  { name: "chef",              status: "stub",   detail: "reserved name" },
+  { name: "puppet",            status: "stub",   detail: "reserved name" },
+  { name: "cloudformation",    status: "stub",   detail: "reserved name" },
+  { name: "bicep",             status: "stub",   detail: "reserved name" },
+  { name: "nix",               status: "stub",   detail: "reserved name" },
+  { name: "cloud-init",        status: "stub",   detail: "reserved name" },
+  { name: "helm",              status: "stub",   detail: "reserved name" },
+  { name: "packer",            status: "stub",   detail: "reserved name" },
+];
+const lines: TerminalLine[] = [
+  { kind: "prompt", cwd: "~/lab", cmd: "vne deploy --manifest ./vme-manifest.json" },
+  { kind: "out", text: "[1/7] pre-flight: environment variables …" },
+  { kind: "out", text: "[2/7] validating VME handoff manifest …" },
+  { kind: "out", text: "[3/7] validating velocitee.yml VNE block …" },
+  { kind: "out", text: "[4/7] building renderer pipeline (velocitee-native) …" },
+  { kind: "out", text: "[5/7] running pipeline …" },
+  { kind: "out", text: "      proxmox: ensuring vmbr0 / vmbr1 vlan-aware …" },
+  { kind: "out", text: "      proxmox: downloading opnsense 24.7 ISO (sha256 verified)" },
+  { kind: "out", text: "      proxmox: rendering config.xml ISO" },
+  { kind: "out", text: "      proxmox: creating VM 100" },
+  { kind: "out", text: "      proxmox: starting VM 100" },
+  { kind: "out", text: "      proxmox: waiting for guest agent IP …" },
+  { kind: "out", text: "      opnsense: api ready at https://10.10.10.1" },
+  { kind: "out", text: "      opnsense: configuring VLANs (10, 20, 30)" },
+  { kind: "out", text: "      opnsense: configuring DHCP scopes" },
+  { kind: "out", text: "      opnsense: configuring Unbound DNS" },
+  { kind: "out", text: "      opnsense: applying firewall rules" },
+  { kind: "out", text: "[6/7] verification …" },
+  { kind: "ok",  text: "api_reachable    https://10.10.10.1 → 200" },
+  { kind: "ok",  text: "dns_resolving    one.one.one.one via 10.10.10.1" },
+  { kind: "ok",  text: "internet_egress  TCP 1.1.1.1:443 reached in 12 ms" },
+  { kind: "ok",  text: "vlans_up         all 3 expected VLAN(s) present" },
+  { kind: "out", text: "[7/7] writing manifest → vne/output/proxmox-01.json", cls: "text-cream" },
+];
+---
+<Base title="VNE — network · velocit.ee" description="VNE — Velocitee Network Configuration Engine. OPNsense VM, VLANs, DHCP, DNS, firewall — declarative, idempotent, provisioner-agnostic.">
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <a href="/engines" class="text-2xs text-muted hover:text-cream transition-colors font-mono">← engines</a>
+      <div class="mt-4 flex items-baseline gap-3">
+        <span class="text-2xs text-ok font-medium tracking-widest">PHASE 2 · LIVE (INITIAL)</span>
+      </div>
+      <h1 class="mt-2 font-mono text-5xl md:text-6xl text-cream tracking-tightest leading-[1] flex items-baseline gap-4 flex-wrap">
+        <span>VNE</span>
+        <span class="text-muted text-2xl md:text-3xl">— network</span>
+      </h1>
+      <p class="mt-6 max-w-[60ch] font-sans font-light text-text leading-relaxed">
+        Take a Proxmox host VME provisioned and turn it into a fully configured network — OPNsense VM, VLANs,
+        DHCP, DNS, firewall — without touching HCL, playbooks, or <code class="text-green-hi">config.xml</code>.
+      </p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="https://docs.velocit.ee/vne/getting-started/"
+           class="bg-green text-bg font-semibold text-sm px-5 py-2.5 hover:bg-green-hi transition-colors">
+          getting-started guide →
+        </a>
+        <a href="https://github.com/velocit-ee/core/tree/main/vne" target="_blank" rel="noopener"
+           class="border border-green text-green-hi text-sm px-5 py-2.5 hover:bg-green hover:text-bg transition-colors">
+          source on github
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-border bg-surface/30">
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <Terminal title="vne deploy — annotated run" lines={lines} startMs={120} stepMs={50} />
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// what VNE delivers</p>
+      <div class="mt-6 grid gap-6 lg:grid-cols-3">
+        <Tile title="opnsense vm" status="ok">
+          <p class="text-muted text-sm font-sans leading-relaxed">
+            VM created on Proxmox with WAN + LAN interfaces. First-boot config.xml renders the root password,
+            the API key, and assigns interfaces — so the API is reachable before VNE even tries to talk to it.
+          </p>
+        </Tile>
+        <Tile title="vlans · dhcp · dns" status="ok">
+          <p class="text-muted text-sm font-sans leading-relaxed">
+            VLANs declared in <code class="text-green-hi">velocitee.yml</code>, DHCP scopes optional per VLAN.
+            Unbound configured for forwarding to your chosen upstream resolvers, with a local domain.
+          </p>
+        </Tile>
+        <Tile title="firewall baseline" status="ok">
+          <p class="text-muted text-sm font-sans leading-relaxed">
+            Default-block, with allow-listed flows. Stable rule descriptions = stable updates.
+            The default-block rule applies last so the renderer never strands itself mid-deployment.
+          </p>
+        </Tile>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-border bg-surface/30">
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16">
+      <p class="label">// provisioner backends</p>
+      <h2 class="mt-3 font-mono text-3xl text-cream tracking-tightest leading-[1.1] max-w-[28ch]">
+        same intent. choose your runner.
+      </h2>
+      <p class="mt-3 max-w-[58ch] font-sans text-sm text-muted leading-relaxed">
+        VNE separates intent from execution. Pick a backend in <code class="text-green-hi">velocitee.yml</code>;
+        adding a new one is one Renderer subclass and one registry entry.
+      </p>
+
+      <ul class="mt-8 grid gap-px bg-border border border-border md:grid-cols-2">
+        {provisioners.map((p) => (
+          <li class="bg-surface px-5 py-4 flex items-center gap-4">
+            <span class={
+              p.status === "live" ? "text-2xs text-ok tracking-widest font-medium w-12" :
+              "text-2xs text-muted tracking-widest font-medium w-12"
+            }>{p.status === "live" ? "LIVE" : "STUB"}</span>
+            <code class="text-cream font-mono text-sm w-44 shrink-0">{p.name}</code>
+            <span class="text-muted font-sans text-xs leading-tight">{p.detail}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-wrap px-6 lg:px-10 py-16 grid lg:grid-cols-[1fr,1fr] gap-10">
+      <div>
+        <p class="label">// idempotency</p>
+        <h2 class="mt-3 font-mono text-3xl text-cream tracking-tightest leading-[1.1]">re-running is always safe.</h2>
+        <p class="mt-3 max-w-[52ch] font-sans text-sm text-muted leading-relaxed">
+          Every step probes the live API before acting. If a resource exists, VNE skips. If state says "done"
+          but the resource was deleted by hand, VNE reconciles. Interrupted runs resume from the last successful
+          step — state is versioned, atomic, and corruption-detecting.
+        </p>
+      </div>
+      <div>
+        <p class="label">// verification gate</p>
+        <h2 class="mt-3 font-mono text-3xl text-cream tracking-tightest leading-[1.1]">manifest only on green.</h2>
+        <p class="mt-3 max-w-[52ch] font-sans text-sm text-muted leading-relaxed">
+          Four checks after every backend: API reachable, DNS resolving via OPNsense, internet egress (TCP, not ICMP),
+          VLANs up. <strong class="text-text font-medium">VNE refuses to write its handoff manifest unless every check passes.</strong>
+          The system is left as-is — no auto-rollback. Resolve, re-run, succeed.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

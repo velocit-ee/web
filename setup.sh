@@ -144,10 +144,16 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 9. npm install
+# 9. npm install + Astro build
 # ─────────────────────────────────────────────────────────────────────────────
-log "Installing Node.js dependencies..."
+log "Installing Node.js dependencies (Express)..."
 sudo -u "${APP_USER}" bash -c "cd '${APP_DIR}' && npm ci --omit=dev --quiet"
+
+log "Installing Astro dependencies and building static site..."
+# Astro is a build-time dependency only — kept in site/package.json so the
+# Express server's runtime is not bloated with the Astro toolchain. Running
+# build here produces site/dist/ which server.js auto-detects.
+sudo -u "${APP_USER}" bash -c "cd '${APP_DIR}/site' && npm install --quiet && npm run build"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 10. Database schema
