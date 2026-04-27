@@ -7,6 +7,7 @@ const helmet  = require('helmet');
 const path    = require('path');
 
 const waitlistRouter = require('./routes/waitlist');
+const contactRouter  = require('./routes/contact');
 const adminRouter    = require('./routes/admin');
 const healthRouter   = require('./routes/health');
 
@@ -41,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/waitlist', waitlistRouter);
+app.use('/api/contact',  contactRouter);
 app.use('/admin',        adminRouter);
 app.use('/health',       healthRouter);
 
