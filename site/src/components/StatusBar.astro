@@ -1,0 +1,51 @@
+---
+// Thin segmented status strip that sits directly below the nav. Pure
+// decoration on most pages — communicates "we ship", "engines online", etc.
+//
+// Override the default segments by passing children via slot, or by passing
+// a `segments` prop. Keep total content under one row even on small screens
+// (will horizontal-scroll if needed).
+
+interface Segment {
+  text: string;
+  /** Color slot. "muted" = default; "g" = green-hi; "b" = blue-hi. */
+  tone?: "muted" | "g" | "b";
+  /** Show a pulsing LED dot before the segment text. Defaults to false. */
+  pulse?: boolean;
+}
+interface Props {
+  segments?: Segment[];
+  showDomain?: boolean;
+}
+
+const {
+  segments = [
+    { text: "VME complete",                tone: "g", pulse: true },
+    { text: "VNE deploying",               tone: "b" },
+    { text: "provisioner velocitee-native", tone: "muted" },
+  ],
+  showDomain = true,
+} = Astro.props as Props;
+
+const toneClass = {
+  muted: "text-dim",
+  g:     "text-green-hi",
+  b:     "text-blue-hi",
+};
+---
+<aside
+  class="bg-surface2 border-y border-border flex items-center gap-6 px-6 lg:px-10 h-[32px] font-mono text-[0.62rem] uppercase tracking-[0.06em] text-dim overflow-x-auto"
+  aria-hidden="false"
+>
+  {segments.map((s) => (
+    <span class="flex items-center gap-2 whitespace-nowrap shrink-0">
+      {s.pulse && (
+        <span class="w-[5px] h-[5px] rounded-full bg-green animate-led" aria-hidden="true"></span>
+      )}
+      <span class={toneClass[s.tone ?? "muted"]}>{s.text}</span>
+    </span>
+  ))}
+  {showDomain && (
+    <span class="ml-auto whitespace-nowrap shrink-0">velocit.ee</span>
+  )}
+</aside>

@@ -1,50 +1,38 @@
 ---
 const { pathname } = Astro.url;
 const links = [
-  { href: "/engines",  label: "engines"  },
-  { href: "/pricing",  label: "pricing"  },
-  { href: "/about",    label: "about"    },
-  { href: "/blog",     label: "blog"     },
-  { href: "https://docs.velocit.ee/", label: "docs", external: true },
+  { href: "https://docs.velocit.ee/",      label: "Docs",      external: true },
+  { href: "/engines",                       label: "Engines" },
+  { href: "https://github.com/velocit-ee",  label: "GitHub",    external: true },
+  { href: "/contact",                       label: "Community" },
 ];
 function isActive(href: string) {
+  if (href.startsWith("http")) return false;
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(href + "/");
 }
 ---
-<nav class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-bg/85 border-b border-border">
-  <div class="mx-auto max-w-wrap px-6 lg:px-10 h-14 flex items-center gap-8">
-    <a href="/" class="text-cream tracking-tightest font-semibold text-base flex items-center gap-2 group">
-      <span class="inline-flex items-center" aria-hidden="true">
-        <span>velocit</span>
-        <span class="inline-block w-[3px] h-3 bg-green-hi mx-0.5 group-hover:animate-cursor"></span>
-      </span>
-      <span class="text-green-hi">.ee</span>
-    </a>
-    <ul class="hidden md:flex items-center gap-7 text-xs text-muted">
-      {links.map((l) => (
-        <li>
-          <a
-            href={l.href}
-            class="nav-underline hover:text-text transition-colors"
-            aria-current={isActive(l.href) ? "page" : undefined}
-            target={l.external ? "_blank" : undefined}
-            rel={l.external ? "noopener" : undefined}
-          >{l.label}</a>
-        </li>
-      ))}
-    </ul>
-    <div class="ml-auto flex items-center gap-3">
-      <a href="https://github.com/velocit-ee" target="_blank" rel="noopener"
-         class="hidden sm:inline-block text-2xs text-muted hover:text-cream transition-colors">
-        github →
-      </a>
-      <a href="/contact"
-         class="bg-green text-bg text-2xs font-semibold tracking-wide px-3 py-1.5 hover:bg-green-hi transition-colors">
-        get started
-      </a>
-    </div>
-  </div>
-  <!-- vertical scanline tick — purely decorative, sells the motion -->
-  <div aria-hidden="true" class="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-green-hi/40 to-transparent"></div>
+<nav class="sticky top-0 z-[100] flex items-center justify-between h-[60px] px-6 lg:px-10 border-b border-border bg-bg/85 backdrop-blur-[14px]">
+  <a href="/" class="font-mono text-[1.1rem] font-semibold tracking-tightest">
+    <span class="text-blue-hi">v</span><span class="text-cream">elocit</span><span class="logo-ee">.ee</span>
+  </a>
+
+  <ul class="hidden md:flex gap-8 list-none font-mono text-[0.72rem] uppercase tracking-[0.08em]">
+    {links.map((l) => (
+      <li>
+        <a
+          href={l.href}
+          target={l.external ? "_blank" : undefined}
+          rel={l.external ? "noopener" : undefined}
+          aria-current={isActive(l.href) ? "page" : undefined}
+          class="text-muted hover:text-blue-hi transition-colors"
+        >{l.label}</a>
+      </li>
+    ))}
+  </ul>
+
+  <a href="/contact"
+     class="font-mono text-[0.72rem] uppercase tracking-[0.06em] py-[0.45rem] px-4 border border-blue text-blue-hi bg-blue-dim hover:bg-blue hover:!text-white transition-colors">
+    Get Started
+  </a>
 </nav>

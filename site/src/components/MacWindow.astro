@@ -1,0 +1,53 @@
+---
+// macOS-style "terminal" window. Renders:
+//   - titlebar with traffic-light buttons (close/minimise/maximise)
+//   - centered title text with optional pulsing dot
+//   - top-edge accent line (blue → green gradient)
+//   - body slot (intended for terminal-style content)
+//   - bottom statusbar via the optional `statusbar` slot
+//
+// All inner content is provided via slots so callers stay declarative:
+//
+//   <MacWindow title="seed@velocitee — deploy" pulse>
+//     <span class="tl2"><span class="tp">$</span> <span class="tc">…</span></span>
+//     ...
+//     <Fragment slot="statusbar">
+//       <span class="sb-g">● live</span>
+//       <span class="sb-sep">|</span>
+//       <span>VNE deploying</span>
+//     </Fragment>
+//   </MacWindow>
+
+interface Props {
+  title?: string;
+  pulse?: boolean;
+  bodyClass?: string;
+}
+const { title = "", pulse = false, bodyClass = "" } = Astro.props;
+const hasStatusbar = Astro.slots.has("statusbar");
+---
+<div class="mac-window">
+  <div class="mac-titlebar">
+    <div class="tls">
+      <span class="tl tlc"><span class="tli">✕</span></span>
+      <span class="tl tlm"><span class="tli">−</span></span>
+      <span class="tl tlx"><span class="tli">+</span></span>
+    </div>
+    {title && (
+      <div class="tbc">
+        {pulse && <span class="tbdot" aria-hidden="true"></span>}
+        <span>{title}</span>
+      </div>
+    )}
+  </div>
+
+  <div class:list={["mac-body", bodyClass]}>
+    <slot />
+  </div>
+
+  {hasStatusbar && (
+    <div class="mac-sb">
+      <slot name="statusbar" />
+    </div>
+  )}
+</div>

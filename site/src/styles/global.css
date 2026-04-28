@@ -1,41 +1,54 @@
-@import "@fontsource/ibm-plex-mono/300.css";
-@import "@fontsource/ibm-plex-mono/400.css";
-@import "@fontsource/ibm-plex-mono/500.css";
-@import "@fontsource/ibm-plex-mono/600.css";
-@import "@fontsource/ibm-plex-sans/300.css";
-@import "@fontsource/ibm-plex-sans/400.css";
-@import "@fontsource/ibm-plex-sans/500.css";
+/* velocit.ee — global styles
+ *
+ * Two layers:
+ *   1. CSS custom properties (`--v-*`) mirror the Tailwind tokens. Used in
+ *      places where Tailwind utility classes aren't ergonomic (canvas paint,
+ *      ::selection, inline gradients, etc.).
+ *   2. Reusable component classes (.mac-window, .pill, .pipe-node, …) too
+ *      dense to write as Tailwind utilities every time.
+ */
+
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/jetbrains-mono/600.css";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/600.css";
+@import "@fontsource/space-grotesk/700.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Tokens. Mirrors tailwind.config.mjs — exposed as CSS custom properties
-   for places where Tailwind utilities aren't ergonomic (e.g. ::selection,
-   inline SVG fills, generated content).
+   Tokens
    ───────────────────────────────────────────────────────────────────────── */
 :root {
-  --bg:        #0b0e09;
-  --surface:   #111510;
-  --surface2:  #171d15;
-  --border:    #232d1f;
-  --green:     #5a9e6a;
-  --green-hi:  #7dc48a;
-  --brown:     #9b7a4e;
-  --brown-hi:  #c4a06a;
-  --cream:     #d4ccb4;
-  --text:      #b8c4a8;
-  --muted:     #5e7055;
-  --dim:       #3a4a34;
-  --ok:        #7dc48a;
-  --warn:      #c4a06a;
-  --crit:      #a85a5a;
+  --v-bg:        #0d0d10;
+  --v-surface:   #141418;
+  --v-surface2:  #1c1c22;
+  --v-surface3:  #222228;
+  --v-border:    #2a2a35;
+  --v-border-hi: #383848;
 
-  /* Spatial system — terminal column units (8ch, 16ch …). */
-  --col: 8ch;
+  --v-cream:     #e8eaf0;
+  --v-text:      #c8cdd8;
+  --v-muted:     #6b7280;
+  --v-dim:       #3d4149;
+
+  --v-blue:      #3b82f6;
+  --v-blue-hi:   #60a5fa;
+  --v-blue-lo:   #1d4ed8;
+  --v-blue-dim:  rgba(59, 130, 246, 0.12);
+
+  --v-green:     #22c55e;
+  --v-green-hi:  #4ade80;
+  --v-green-lo:  #16a34a;
+  --v-green-dim: rgba(34, 197, 94, 0.08);
+
+  --v-cyan:      #22d3ee;
+
+  --v-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --v-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
 
   color-scheme: dark;
 }
@@ -47,238 +60,411 @@
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-feature-settings: "ss01", "ss02";
+    background: var(--v-bg);
+    color: var(--v-text);
+    font-family: var(--v-sans);
+    font-size: 15px;
+    line-height: 1.6;
     overflow-x: hidden;
   }
-  ::selection { background: var(--green); color: var(--bg); }
+  ::selection { background: var(--v-blue); color: var(--v-cream); }
 
-  /* Headings — terminal heading prefix. The `#`/`##` glyphs are decorative,
-     they don't break copy/paste because they're inserted via ::before with
-     speak: none. */
   h1, h2, h3, h4 {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    color: var(--cream);
-    font-weight: 600;
-    letter-spacing: -0.025em;
+    font-family: var(--v-sans);
+    color: var(--v-cream);
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
   a { color: inherit; text-decoration: none; }
-  a:hover { color: var(--cream); }
 
-  /* Default focus ring — visible on dark backgrounds */
   :focus-visible {
     outline: none;
-    box-shadow: 0 0 0 1px var(--green), 0 0 0 4px rgba(125,196,138,0.25);
+    box-shadow: 0 0 0 1px var(--v-blue), 0 0 0 4px rgba(59,130,246,0.25);
   }
 
-  /* Form elements — inherit the font, kill default appearance. */
   input, textarea, select, button {
     font: inherit;
     color: inherit;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--v-surface);
+    border: 1px solid var(--v-border);
   }
-  input::placeholder, textarea::placeholder { color: var(--dim); }
+  input::placeholder, textarea::placeholder { color: var(--v-dim); }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Atmosphere
-     - subtle hairline grid covering the whole page
-     - one slow scanline drifting from top to bottom
-     - both extremely low-contrast — this is *atmosphere*, not noise
+   Logo — animated underline on .ee
    ───────────────────────────────────────────────────────────────────────── */
-.atmosphere {
-  position: fixed; inset: 0;
-  pointer-events: none;
-  z-index: 0;
+.logo-ee {
+  position: relative;
+  color: var(--v-green-hi);
 }
-.atmosphere::before {
-  content: "";
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(to right, #1a2218 1px, transparent 1px),
-    linear-gradient(to bottom, #1a2218 1px, transparent 1px);
-  background-size: 44px 44px;
-  opacity: 0.45;
-  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+.logo-ee::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: -2px;
+  height: 1px;
+  background: var(--v-green);
+  animation: lbar 3s ease-in-out infinite;
 }
-.atmosphere::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0;
-  height: 30vh;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(125,196,138,0.025) 45%,
-    rgba(125,196,138,0.06) 50%,
-    rgba(125,196,138,0.025) 55%,
-    transparent 100%
-  );
-  animation: scanline 12s linear infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .atmosphere::after { animation: none; opacity: 0; }
-}
-@keyframes scanline {
-  0%   { transform: translateY(-30vh); }
-  100% { transform: translateY(120vh); }
+@keyframes lbar {
+  0%, 100% { opacity: 0.4; transform: scaleX(0.6); }
+  50%      { opacity: 1;   transform: scaleX(1);   }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Tile — the recurring "Proxmox panel" UI primitive. Used for engine cards,
-   pricing tiers, log dumps. The bar at the top is the panel chrome.
+   Status pills (LED-prefixed rounded chips)
+   ───────────────────────────────────────────────────────────────────────── */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--v-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.pill-g { background: rgba(34,197,94,0.08);  border-color: rgba(34,197,94,0.25);  color: #4ade80; }
+.pill-b { background: rgba(59,130,246,0.10); border-color: rgba(59,130,246,0.30); color: #60a5fa; }
+.pill-c { background: rgba(34,211,238,0.07); border-color: rgba(34,211,238,0.20); color: #22d3ee; }
+.pill .pdot {
+  width: 5px; height: 5px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.pill-g .pdot { background: #4ade80; animation: pulse 2s ease-in-out infinite; }
+.pill-b .pdot { background: #60a5fa; animation: pulse 1.6s ease-in-out infinite 0.4s; }
+.pill-c .pdot { background: #22d3ee; animation: pulse 2.2s ease-in-out infinite 0.8s; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 1;   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Tile — lightweight panel primitive used outside the hero (engine cards,
+   sidebars, FAQ items). Family-related to mac-window but simpler chrome.
    ───────────────────────────────────────────────────────────────────────── */
 .tile {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--v-surface);
+  border: 1px solid var(--v-border);
   position: relative;
-  transition: border-color 0.18s ease, transform 0.18s ease;
+  transition: border-color 0.18s ease;
 }
-.tile:hover { border-color: var(--green); }
+.tile:hover { border-color: var(--v-blue); }
 .tile-bar {
-  border-bottom: 1px solid var(--border);
-  background: var(--surface2);
+  border-bottom: 1px solid var(--v-border);
+  background: var(--v-surface2);
   padding: 0.45rem 0.85rem;
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  font-size: 0.66rem;
-  color: var(--dim);
+  font-family: var(--v-mono);
+  font-size: 0.62rem;
+  color: var(--v-dim);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .tile-bar .dot {
   width: 6px; height: 6px; border-radius: 999px;
-  background: var(--dim);
+  background: var(--v-dim);
 }
-.tile-bar .dot-ok   { background: var(--ok);   box-shadow: 0 0 6px rgba(125,196,138,0.6); }
-.tile-bar .dot-warn { background: var(--warn); }
-.tile-bar .dot-crit { background: var(--crit); }
-.tile-bar .spacer { flex: 1; }
+.tile-bar .dot-ok   { background: var(--v-green-hi); box-shadow: 0 0 6px rgba(74,222,128,0.6); }
+.tile-bar .dot-warn { background: #febc2e; }
+.tile-bar .dot-crit { background: #ff5f57; }
+.tile-bar .spacer   { flex: 1; }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Modeline — the signature horizontal status strip. Sits above the footer.
-   Looks like a vim modeline. Includes a faux ticking clock and run id.
+   Mac-style terminal window
    ───────────────────────────────────────────────────────────────────────── */
-.modeline {
-  background: var(--surface2);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 0.66rem;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-  padding: 0.45rem 1rem;
+.mac-window {
+  background: var(--v-surface);
+  border: 1px solid var(--v-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.mac-titlebar {
+  background: var(--v-surface2);
+  border-bottom: 1px solid var(--v-border);
+  padding: 0 1rem;
+  height: 44px;
   display: flex;
-  gap: 1.2rem;
   align-items: center;
-  flex-wrap: wrap;
+  position: relative;
+  border-radius: 12px 12px 0 0;
 }
-.modeline .seg { display: inline-flex; align-items: center; gap: 0.4rem; }
-.modeline .seg-prim { color: var(--green-hi); }
-.modeline .seg-acc  { color: var(--brown-hi); }
-.modeline .pulse {
-  width: 5px; height: 5px; border-radius: 999px;
-  background: var(--ok);
-  animation: tick 2s ease-in-out infinite;
-}
-@keyframes tick {
-  0%, 100% { opacity: 0.4; }
-  50%      { opacity: 1; }
+.mac-titlebar::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--v-blue), var(--v-green));
+  opacity: 0.5;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Hero "terminal" — the centerpiece on the landing page.
-   A real-looking shell session that reveals lines on a stagger.
-   ───────────────────────────────────────────────────────────────────────── */
-.term-line {
+.tls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.tl  {
+  width: 13px; height: 13px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: default;
+  transition: filter 0.15s;
+}
+.tl:hover { filter: brightness(1.15); }
+.tlc { background: #ff5f57; border: 1px solid #e0443e; }
+.tlm { background: #febc2e; border: 1px solid #d8a021; }
+.tlx { background: #28c840; border: 1px solid #1aab2a; }
+.tli {
   opacity: 0;
-  animation: typeon 0.35s ease-out forwards;
+  font-size: 8px; font-weight: 900;
+  color: rgba(0,0,0,0.5);
+  font-family: var(--v-mono);
+  user-select: none;
+  transition: opacity 0.15s;
 }
-@keyframes typeon {
-  0%   { opacity: 0; transform: translateY(2px); }
-  60%  { opacity: 1; transform: none; }
-  100% { opacity: 1; }
+.tls:hover .tli { opacity: 1; }
+
+.tbc {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 0.5rem;
+  font-family: var(--v-mono);
+  font-size: 0.68rem;
+  color: var(--v-muted);
+  pointer-events: none;
 }
+.tbdot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--v-green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.mac-body {
+  padding: 1.25rem 1.5rem;
+  font-family: var(--v-mono);
+  font-size: 0.8rem;
+  line-height: 2;
+  background: var(--v-surface);
+}
+/* `.term-line` is the older alias from the original Terminal component;
+   `.tl2` is the design-reference name. They share the same animation so
+   either selector works inside any mac/terminal-style block. */
+.tl2,
+.term-line {
+  display: block;
+  opacity: 0;
+  animation: tlin 0.35s ease both;
+}
+@keyframes tlin {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.tp  { color: var(--v-blue-hi); }       /* prompt $ */
+.tc  { color: var(--v-cream); }         /* command */
+.tok { color: var(--v-green-hi); }      /* PASS / ✓ */
+.ti  { color: var(--v-cyan); }          /* info → */
+.td  { color: var(--v-dim); }           /* dim metadata */
+.tb  { color: var(--v-blue-hi); }       /* blue accent (▶ etc.) */
+
+/* `.cur` is the design-reference name; `.cursor` is the older alias from
+   the first Terminal component. Both render an identical blinking caret. */
+.cur,
 .cursor {
   display: inline-block;
-  width: 0.55ch;
-  height: 1em;
-  background: var(--green);
+  width: 0.5ch; height: 1em;
+  background: var(--v-blue-hi);
   vertical-align: -0.1em;
-  margin-left: 0.15ch;
-  animation: cursor 1.05s steps(1) infinite;
+  margin-left: 0.1ch;
+  animation: cblink 1.05s steps(1) infinite;
 }
-@keyframes cursor { 50% { opacity: 0; } }
+@keyframes cblink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-/* Prefer-reduced-motion respect */
-@media (prefers-reduced-motion: reduce) {
-  .term-line, .cursor { animation: none !important; opacity: 1 !important; }
+.mac-sb {
+  background: var(--v-surface3);
+  border-top: 1px solid var(--v-border);
+  padding: 0.4rem 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  font-family: var(--v-mono);
+  font-size: 0.62rem;
+  color: var(--v-dim);
+  letter-spacing: 0.06em;
+  border-radius: 0 0 12px 12px;
 }
+.sb-g { color: var(--v-green-hi); }
+.sb-b { color: var(--v-blue-hi); }
+.sb-sep { color: var(--v-border-hi); }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Heading prefix decoration — the "## " marker that frames every section
-   label. Replicates the landing-page mood at scale.
+   Pipeline section
    ───────────────────────────────────────────────────────────────────────── */
-.label {
-  display: inline-block;
-  color: var(--brown);
-  font-size: 0.66rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+.pipeline { position: relative; }
+.pipeline::before {
+  content: '';
+  position: absolute;
+  top: 2rem;
+  left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--v-blue-lo), var(--v-blue), var(--v-green));
+  z-index: 0;
 }
-.label::before {
-  content: "## ";
-  color: var(--dim);
+.pipe-stage { position: relative; z-index: 1; padding: 0 1rem; text-align: center; }
+.pipe-node  {
+  width: 4rem; height: 4rem;
+  border: 1px solid var(--v-border-hi);
+  background: var(--v-surface);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-family: var(--v-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--v-text);
+  transition: all 0.2s;
+}
+.pipe-node:hover, .pipe-node.active {
+  border-color: var(--v-blue);
+  background: var(--v-blue-dim);
+  color: var(--v-blue-hi);
+}
+.pipe-node.active {
+  box-shadow: inset 0 0 20px var(--v-blue-dim);
+}
+.pipe-name {
+  font-family: var(--v-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--v-muted);
+  margin-bottom: 0.5rem;
+}
+.pipe-desc {
+  font-size: 0.8rem;
+  color: var(--v-dim);
+  line-height: 1.5;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Prose — used inside MDX/blog posts.
+   Section labels (// Architecture, // Demo, etc.)
+   `.sec-label` — auto-prefixes with `//` via ::before (use on new pages
+                  where the content is just the label name).
+   `.label`     — no prefix; legacy pages put `// ` literally in content.
+                  Visually identical otherwise.
+   ───────────────────────────────────────────────────────────────────────── */
+.sec-label,
+.label {
+  font-family: var(--v-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--v-blue);
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.sec-label::before {
+  content: '//';
+  color: var(--v-dim);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Hardware-asset compositing — desaturate + tint into the dark canvas
+   ───────────────────────────────────────────────────────────────────────── */
+.hw-asset {
+  filter: brightness(0.85) saturate(0.35) hue-rotate(200deg);
+  mix-blend-mode: screen;
+  color: var(--v-blue-hi);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Hero canvas backdrop
+   ───────────────────────────────────────────────────────────────────────── */
+.hero-scene { position: relative; overflow: hidden; }
+.hero-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+}
+.mist-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 160px;
+  background: linear-gradient(to top, var(--v-bg) 0%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.hero-overlay { position: relative; z-index: 2; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Buttons (primary blue, secondary green-outline)
+   ───────────────────────────────────────────────────────────────────────── */
+.btn-p {
+  display: inline-block;
+  font-family: var(--v-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.75rem;
+  background: var(--v-blue);
+  color: #fff;
+  border: 1px solid var(--v-blue);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-p:hover { background: var(--v-blue-hi); border-color: var(--v-blue-hi); }
+.btn-s {
+  display: inline-block;
+  font-family: var(--v-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.75rem;
+  background: transparent;
+  color: var(--v-green-hi);
+  border: 1px solid var(--v-green-lo);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-s:hover { background: var(--v-green-dim); }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Prose — used inside MDX/blog posts
    ───────────────────────────────────────────────────────────────────────── */
 .prose {
-  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--v-sans);
   font-size: 0.95rem;
   line-height: 1.75;
-  color: var(--text);
+  color: var(--v-text);
   max-width: 68ch;
 }
 .prose p { margin: 0 0 1.1em; }
-.prose strong { color: var(--cream); font-weight: 500; }
+.prose strong { color: var(--v-cream); font-weight: 600; }
 .prose code {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--v-mono);
   font-size: 0.86em;
-  background: var(--surface);
+  background: var(--v-surface);
   padding: 0.1em 0.4em;
-  border: 1px solid var(--border);
+  border: 1px solid var(--v-border);
+  border-radius: 3px;
 }
 .prose h2, .prose h3 {
   margin-top: 2.4em;
   margin-bottom: 0.6em;
 }
 .prose a {
-  color: var(--green-hi);
-  border-bottom: 1px solid color-mix(in oklab, var(--green) 50%, transparent);
+  color: var(--v-blue-hi);
+  border-bottom: 1px solid color-mix(in oklab, var(--v-blue) 50%, transparent);
 }
-.prose a:hover { color: var(--cream); border-bottom-color: var(--cream); }
+.prose a:hover {
+  color: var(--v-cream);
+  border-bottom-color: var(--v-cream);
+}
 
-/* Utility: a thin animated underline used on nav items */
-.nav-underline {
-  position: relative;
-}
-.nav-underline::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: -3px;
-  height: 1px;
-  background: var(--green);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.18s ease;
-}
-.nav-underline:hover::after,
-.nav-underline[aria-current="page"]::after {
-  transform: scaleX(1);
+/* ─────────────────────────────────────────────────────────────────────────
+   Reduced-motion respect — global override
+   ───────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
