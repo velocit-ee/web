@@ -6,7 +6,7 @@ The velocit.ee marketing site and waitlist backend.
 status:   live at velocit.ee
 frontend: Astro 4 + Tailwind (./site)
 backend:  Express on Node 22 (./)
-license:  MIT (site config); content under AGPL v3
+license:  MIT (site config); content under Apache 2.0
 ```
 
 ---
