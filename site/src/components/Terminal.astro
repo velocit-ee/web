@@ -42,7 +42,7 @@ const {
       if (line.kind === "blank") return <div class="term-line" style={style}>&nbsp;</div>;
       if (line.kind === "prompt") return (
         <div class="term-line" style={style}>
-          <span class="text-brown-hi">{line.cwd ?? "~"}</span>
+          <span class="text-cyan">{line.cwd ?? "~"}</span>
           <span class="text-dim"> $ </span>
           <span class="text-cream">{line.cmd}</span>
         </div>
@@ -62,7 +62,7 @@ const {
     {showCursor && (
       <div class="term-line"
            style={`animation-delay: ${startMs + lines.length * stepMs}ms`}>
-        <span class="text-brown-hi">~</span>
+        <span class="text-cyan">~</span>
         <span class="text-dim"> $ </span>
         <span class="cursor" aria-hidden="true"></span>
       </div>

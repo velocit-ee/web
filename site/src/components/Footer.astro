@@ -1,72 +1,23 @@
 ---
 const year = new Date().getUTCFullYear();
-const cols = [
-  {
-    head: "engines",
-    items: [
-      { href: "/engines/vme", label: "VME — metal" },
-      { href: "/engines/vne", label: "VNE — network" },
-      { href: "/engines/vse", label: "VSE — services (planned)" },
-      { href: "/engines/vle", label: "VLE — lifecycle (planned)" },
-    ],
-  },
-  {
-    head: "site",
-    items: [
-      { href: "/pricing",  label: "pricing" },
-      { href: "/about",    label: "about" },
-      { href: "/blog",     label: "blog" },
-      { href: "/contact",  label: "contact" },
-    ],
-  },
-  {
-    head: "resources",
-    items: [
-      { href: "https://docs.velocit.ee/", label: "documentation" },
-      { href: "https://github.com/velocit-ee", label: "github" },
-      { href: "https://github.com/velocit-ee/core/blob/main/CHANGELOG.md", label: "changelog" },
-      { href: "/legal/privacy", label: "privacy" },
-      { href: "/legal/terms",   label: "terms" },
-    ],
-  },
+const links = [
+  { href: "https://github.com/velocit-ee",       label: "GitHub",     external: true },
+  { href: "https://docs.velocit.ee/",            label: "Docs",       external: true },
+  { href: "https://www.apache.org/licenses/LICENSE-2.0", label: "Apache 2.0", external: true },
+  { href: "/contact",                            label: "Contact" },
 ];
 ---
-<footer class="relative mt-24 border-t border-border bg-surface/40">
-  <div class="mx-auto max-w-wrap px-6 lg:px-10 py-12 grid gap-10 md:grid-cols-[1.4fr,1fr,1fr,1fr]">
-    <div>
-      <a href="/" class="inline-flex items-baseline text-cream font-semibold tracking-tightest text-lg">
-        velocit<span class="inline-block w-[3px] h-3 bg-green-hi mx-0.5"></span><span class="text-green-hi">.ee</span>
-      </a>
-      <p class="mt-3 text-2xs text-muted leading-relaxed font-sans max-w-[28ch]">
-        open-core infrastructure deployment platform.<br/>
-        bare metal to documented, running stack.
-      </p>
-      <div class="mt-5 inline-flex items-center gap-2 text-2xs text-dim border border-border px-2 py-1">
-        <span class="inline-block w-1.5 h-1.5 rounded-full bg-ok animate-tick"></span>
-        <span>operational</span>
-        <span class="text-muted">·</span>
-        <a href="https://status.velocit.ee" class="text-muted hover:text-cream">status</a>
-      </div>
-    </div>
-    {cols.map((col) => (
-      <div>
-        <p class="label">{col.head}</p>
-        <ul class="mt-4 space-y-2 text-2xs text-muted">
-          {col.items.map((it) => (
-            <li>
-              <a href={it.href} class="hover:text-cream transition-colors"
-                 target={it.href.startsWith("http") ? "_blank" : undefined}
-                 rel={it.href.startsWith("http") ? "noopener" : undefined}>
-                {it.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+<footer class="border-t border-border px-6 lg:px-10 py-6 flex flex-wrap gap-4 items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.06em] text-dim">
+  <div class="text-blue-hi">velocit.ee</div>
+  <div class="flex gap-6 flex-wrap">
+    {links.map((l) => (
+      <a
+        href={l.href}
+        target={l.external ? "_blank" : undefined}
+        rel={l.external ? "noopener" : undefined}
+        class="text-dim hover:text-muted transition-colors"
+      >{l.label}</a>
     ))}
   </div>
-  <div class="mx-auto max-w-wrap px-6 lg:px-10 pb-8 flex flex-wrap items-center justify-between gap-3 text-2xs text-dim font-mono border-t border-border pt-6">
-    <span>© {year} velocit.ee · Apache 2.0 (engines), MIT (site)</span>
-    <span class="text-muted">made in europe · runs on a proxmox in a basement</span>
-  </div>
+  <div class="whitespace-nowrap">© {year} velocitee</div>
 </footer>

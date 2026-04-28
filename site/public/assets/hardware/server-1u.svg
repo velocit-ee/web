@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" role="img" aria-label="1U server">
+  <!-- 1U server chassis with vents + LEDs -->
+  <rect x="2" y="2" width="196" height="56" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <!-- Vent pattern -->
+  <g opacity="0.4" stroke="currentColor" stroke-width="0.6">
+    <line x1="14" y1="14" x2="14" y2="46"/>
+    <line x1="20" y1="14" x2="20" y2="46"/>
+    <line x1="26" y1="14" x2="26" y2="46"/>
+    <line x1="32" y1="14" x2="32" y2="46"/>
+    <line x1="38" y1="14" x2="38" y2="46"/>
+    <line x1="44" y1="14" x2="44" y2="46"/>
+  </g>
+  <!-- Status LEDs -->
+  <circle cx="62" cy="22" r="3" fill="#22c55e" opacity="0.9"/>
+  <circle cx="62" cy="38" r="3" fill="#60a5fa" opacity="0.7"/>
+  <!-- Drive bays -->
+  <g>
+    <rect x="80" y="10" width="34" height="40" rx="2" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.6"/>
+    <rect x="118" y="10" width="34" height="40" rx="2" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.6"/>
+    <rect x="156" y="10" width="34" height="40" rx="2" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.6"/>
+  </g>
+  <!-- Activity flicker LEDs on each bay -->
+  <circle cx="86" cy="18" r="1.4" fill="#22c55e" opacity="0.8"/>
+  <circle cx="124" cy="18" r="1.4" fill="#22c55e" opacity="0.5"/>
+  <circle cx="162" cy="18" r="1.4" fill="#3d4149" opacity="0.7"/>
+</svg>

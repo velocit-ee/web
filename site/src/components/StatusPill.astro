@@ -1,0 +1,15 @@
+---
+// Small rounded "LED" status chip. Three tones: green (g), blue (b), cyan (c).
+
+interface Props {
+  tone: "g" | "b" | "c";
+  label: string;
+  /** Optional `aria-label` override for screen readers. */
+  ariaLabel?: string;
+}
+const { tone, label, ariaLabel } = Astro.props;
+---
+<span class:list={["pill", "pill-" + tone]} aria-label={ariaLabel || label}>
+  <span class="pdot" aria-hidden="true"></span>
+  <span>{label}</span>
+</span>

@@ -2,13 +2,15 @@
 import "../styles/global.css";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
-import Modeline from "../components/Modeline.astro";
+import StatusBar from "../components/StatusBar.astro";
 
 interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
   noindex?: boolean;
+  /** Render the segmented status bar below the nav. Defaults to true. */
+  statusBar?: boolean;
 }
 
 const {
@@ -16,6 +18,7 @@ const {
   description = "Open-core infrastructure deployment platform. Take hardware from bare metal to a documented, running stack — engine by engine. Free and self-hostable under Apache 2.0.",
   ogImage = "/og-image.png",
   noindex = false,
+  statusBar = true,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, "https://velocit.ee").toString();
@@ -28,7 +31,7 @@ const canonical = new URL(Astro.url.pathname, "https://velocit.ee").toString();
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex,nofollow" />}
-    <meta name="theme-color" content="#0b0e09" />
+    <meta name="theme-color" content="#0d0d10" />
     <link rel="canonical" href={canonical} />
 
     <!-- icons / pwa -->
@@ -53,16 +56,14 @@ const canonical = new URL(Astro.url.pathname, "https://velocit.ee").toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, "https://velocit.ee").toString()} />
   </head>
-  <body class="min-h-screen flex flex-col antialiased">
-    <div class="atmosphere" aria-hidden="true"></div>
-
+  <body class="min-h-screen flex flex-col antialiased bg-bg text-text">
     <Nav />
+    {statusBar && <StatusBar />}
 
-    <main class="relative z-10 pt-16 flex-1">
+    <main class="flex-1">
       <slot />
     </main>
 
-    <Modeline />
     <Footer />
   </body>
 </html>

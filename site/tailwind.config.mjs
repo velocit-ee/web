@@ -1,49 +1,55 @@
 /** @type {import('tailwindcss').Config} */
+//
+// velocit.ee design tokens — sourced from the redesign brief
+// (palette: charcoal + blue + green; fonts: JetBrains Mono + Space Grotesk).
+// Old brown accents intentionally dropped.
 export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
-  // Velocitee tokens — match BRAND.md exactly. Tailwind utilities expose them
-  // as bg-bg, text-cream, border-border, etc.
   theme: {
     extend: {
       colors: {
-        bg:        "#0b0e09",
-        surface:   "#111510",
-        surface2:  "#171d15",
-        border:    "#232d1f",
-        green:     "#5a9e6a",
-        "green-hi":"#7dc48a",
-        brown:     "#9b7a4e",
-        "brown-hi":"#c4a06a",
-        cream:     "#d4ccb4",
-        text:      "#b8c4a8",
-        muted:     "#5e7055",
-        dim:       "#3a4a34",
-        // Status colors for the modeline / log lines.
-        ok:        "#7dc48a",
-        warn:      "#c4a06a",
-        crit:      "#a85a5a",
+        // Backgrounds — pure near-black charcoal, no green tint anywhere
+        bg:        "#0d0d10",
+        surface:   "#141418",
+        surface2:  "#1c1c22",
+        surface3:  "#222228",
+
+        // Borders
+        border:    "#2a2a35",
+        "border-hi": "#383848",
+
+        // Text
+        cream:     "#e8eaf0",
+        text:      "#c8cdd8",
+        muted:     "#6b7280",
+        dim:       "#3d4149",
+
+        // Blue — primary accent, CTAs, active states, data streams
+        blue:      "#3b82f6",
+        "blue-hi": "#60a5fa",
+        "blue-lo": "#1d4ed8",
+        "blue-dim":"rgba(59,130,246,0.12)",
+
+        // Green — success, verification pass, .ee domain, go signals
+        green:     "#22c55e",
+        "green-hi":"#4ade80",
+        "green-lo":"#16a34a",
+        "green-dim":"rgba(34,197,94,0.08)",
+
+        // Cyan — info, secondary data signals
+        cyan:      "#22d3ee",
+
+        // Status colors (mac traffic lights, status bar)
+        ok:        "#4ade80",
+        warn:      "#febc2e",
+        crit:      "#ff5f57",
       },
       fontFamily: {
-        // IBM Plex Mono is the brand mono; JetBrains Mono is a fallback used
-        // sparingly inside terminal-tile widgets where the slightly different
-        // shape adds character to log dumps. Plex Sans handles long-form prose.
-        mono: ['"IBM Plex Mono"', '"JetBrains Mono"', "ui-monospace", "monospace"],
-        sans: ['"IBM Plex Sans"', "ui-sans-serif", "system-ui", "sans-serif"],
-        log:  ['"JetBrains Mono"', '"IBM Plex Mono"', "ui-monospace", "monospace"],
-      },
-      fontSize: {
-        // tighter scale than Tailwind's default — terminal feel
-        "2xs": ["0.65rem", { lineHeight: "1rem", letterSpacing: "0.04em" }],
-        "xs":  ["0.72rem", { lineHeight: "1.1rem" }],
-        "sm":  ["0.82rem", { lineHeight: "1.25rem" }],
-        "base":["0.92rem", { lineHeight: "1.55rem" }],
-        "lg":  ["1.05rem", { lineHeight: "1.55rem" }],
-        "xl":  ["1.25rem", { lineHeight: "1.6rem" }],
-        "2xl": ["1.55rem", { lineHeight: "1.7rem", letterSpacing: "-0.02em" }],
-        "3xl": ["1.95rem", { lineHeight: "1.05",   letterSpacing: "-0.025em" }],
-        "4xl": ["2.45rem", { lineHeight: "1.05",   letterSpacing: "-0.03em"  }],
-        "5xl": ["3.20rem", { lineHeight: "1.04",   letterSpacing: "-0.035em" }],
-        "6xl": ["4.20rem", { lineHeight: "1.02",   letterSpacing: "-0.04em"  }],
+        // Mono = JetBrains Mono for terminal/log content, status bars, labels
+        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+        // Sans = Space Grotesk for headings, body prose, navigation, buttons
+        sans: ['"Space Grotesk"', "ui-sans-serif", "system-ui", "sans-serif"],
+        log:  ['"JetBrains Mono"', "ui-monospace", "monospace"],
       },
       letterSpacing: {
         tightest: "-0.045em",
@@ -53,52 +59,48 @@ export default {
         prose: "68ch",
       },
       keyframes: {
-        // CRT-style cursor that blinks on the off-beat.
         cursor: {
-          "0%, 49%": { opacity: "1" },
-          "50%, 100%": { opacity: "0" },
+          "0%":   { opacity: "1" },
+          "50%":  { opacity: "0" },
+          "100%": { opacity: "1" },
         },
-        // Slow scanline that drifts down the page — atmosphere, not noise.
-        scanline: {
-          "0%":   { transform: "translateY(-30%)" },
-          "100%": { transform: "translateY(130vh)" },
+        lbar: {
+          "0%, 100%": { opacity: "0.4", transform: "scaleX(0.6)" },
+          "50%":      { opacity: "1",   transform: "scaleX(1)"   },
         },
-        // Type-on effect for the hero terminal log.
-        typeon: {
-          "0%":  { opacity: "0", transform: "translateX(-2px)" },
-          "60%": { opacity: "1", transform: "translateX(0)"   },
-          "100%":{ opacity: "1" },
-        },
-        // Modeline tick — half-second pulse on a status indicator.
-        tick: {
-          "0%, 100%": { opacity: "0.4" },
+        led: {
+          "0%, 100%": { opacity: "0.3" },
           "50%":      { opacity: "1"   },
+        },
+        tlin: {
+          "0%":   { opacity: "0", transform: "translateY(2px)" },
+          "100%": { opacity: "1", transform: "none" },
+        },
+        rackin: {
+          "0%":   { opacity: "0", transform: "translateY(12px)" },
+          "100%": { opacity: "1", transform: "none" },
+        },
+        textin: {
+          "0%":   { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "none" },
+        },
+        pillin: {
+          "0%":   { opacity: "0", transform: "translateX(10px)" },
+          "100%": { opacity: "1", transform: "none" },
         },
       },
       animation: {
         cursor: "cursor 1.05s steps(1) infinite",
-        scanline: "scanline 12s linear infinite",
-        typeon: "typeon 0.4s ease-out both",
-        tick: "tick 2s ease-in-out infinite",
-      },
-      backgroundImage: {
-        // Faint hairline grid. Used as an atmospheric background.
-        grid:
-          "linear-gradient(to right, #1a2218 1px, transparent 1px), " +
-          "linear-gradient(to bottom, #1a2218 1px, transparent 1px)",
-        // Phosphor glow under the green accent — visible on hover.
-        phosphor:
-          "radial-gradient(circle at center, #7dc48a 0%, transparent 60%)",
-      },
-      backgroundSize: {
-        grid: "44px 44px",
+        lbar:   "lbar 3s ease-in-out infinite",
+        led:    "led 2s ease-in-out infinite",
+        tlin:   "tlin 0.35s ease both",
+        rackin: "rackin 1s ease 0.7s both",
+        textin: "textin 0.8s ease 0.3s both",
+        pillin: "pillin 0.7s ease 1.4s both",
       },
       boxShadow: {
-        // 1-px inner border + dark drop, like a Proxmox card.
-        tile:    "inset 0 0 0 1px #232d1f, 0 8px 24px -12px rgba(0,0,0,0.6)",
-        "tile-hi": "inset 0 0 0 1px #5a9e6a, 0 12px 32px -12px rgba(125,196,138,0.18)",
-        // Glow on focus rings.
-        focus:   "0 0 0 1px #5a9e6a, 0 0 0 4px rgba(90,158,106,0.25)",
+        "active-blue": "inset 0 0 20px rgba(59,130,246,0.12)",
+        focus:         "0 0 0 1px #3b82f6, 0 0 0 4px rgba(59,130,246,0.25)",
       },
     },
   },
