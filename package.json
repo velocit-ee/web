@@ -1,6 +1,6 @@
 {
   "name": "velocitee",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "velocit.ee — Astro frontend in ./site, Express API + static server in this dir.",
   "main": "server.js",
   "scripts": {

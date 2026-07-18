@@ -78,14 +78,15 @@ function renderPage({ total, tableRows }) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>velocit.ee — admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  /* System monospace stack — no third-party font fetch. The old
+     fonts.googleapis.com <link> was blocked by our own Helmet CSP
+     (style-src 'self') and silently fell back to this anyway. */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background:  #0b0e09;
     color:       #d4ccb4;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
     font-size:   14px;
     line-height: 1.6;
     padding:     2.5rem;
@@ -129,7 +130,7 @@ function renderPage({ total, tableRows }) {
     padding:     0.45rem 1.2rem;
     border-radius: 4px;
     text-decoration: none;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
     font-size:   0.82rem;
     font-weight: 600;
   }

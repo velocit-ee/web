@@ -5,9 +5,7 @@ const router  = express.Router();
 
 const { contactLimiter } = require('../middleware/rateLimit');
 const { validateContact } = require('../middleware/validate');
-const { Resend } = require('resend');
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+const { getResend } = require('../lib/resend');
 
 // POST /api/contact — receives a contact form submission, emails it to
 // inquiries@velocit.ee. We do not persist contact messages to the DB; they
@@ -15,11 +13,10 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 router.post('/', contactLimiter, validateContact, async (req, res) => {
   const { name, email, organization, message } = req.body;
 
-  // Cloudflare gives us the real client IP via this header.
-  const ip = req.headers['cf-connecting-ip'] || req.ip || 'unknown';
   const ts = new Date().toUTCString();
 
-  if (!process.env.RESEND_API_KEY) {
+  const resend = getResend();
+  if (!resend) {
     console.error('[contact] RESEND_API_KEY missing — refusing to silently drop submission');
     return res.status(503).json({
       success: false,
@@ -34,10 +31,11 @@ router.post('/', contactLimiter, validateContact, async (req, res) => {
       reply_to: email,
       subject: `velocit.ee contact — ${name}${organization ? ` (${organization})` : ''}`,
       text: [
+        // No client IP: the privacy notice promises raw IPs never leave the
+        // edge. Rate-limiting already keys on the hashed IP upstream.
         `From    : ${name} <${email}>`,
         organization ? `Org     : ${organization}` : null,
         `Time    : ${ts}`,
-        `Client  : ${ip}`,
         '─'.repeat(50),
         '',
         message,

@@ -6,9 +6,7 @@ const router  = express.Router();
 const { pool, hashIP }      = require('../db');
 const { waitlistLimiter }   = require('../middleware/rateLimit');
 const { validateEmail }     = require('../middleware/validate');
-const { Resend }             = require('resend');
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+const { getResend }         = require('../lib/resend');
 
 // POST /api/waitlist
 router.post('/', waitlistLimiter, validateEmail, async (req, res) => {
@@ -20,20 +18,21 @@ router.post('/', waitlistLimiter, validateEmail, async (req, res) => {
   const source = (req.get('origin') || req.get('referer') || 'website').slice(0, 255);
 
   try {
-    // ── Deduplicate ─────────────────────────────────────────────────────────
-    const { rows: existing } = await pool.query(
-      'SELECT id FROM waitlist WHERE email = $1',
-      [email]
-    );
-    if (existing.length > 0) {
-      return res.json({ success: true, message: "you're already on the list." });
-    }
-
-    // ── Insert ───────────────────────────────────────────────────────────────
-    await pool.query(
-      'INSERT INTO waitlist (email, ip_hash, source) VALUES ($1, $2, $3)',
+    // ── Insert, atomically deduplicating on email ────────────────────────────
+    // ON CONFLICT DO NOTHING closes the check-then-insert race: two concurrent
+    // signups for the same address can't turn the loser into a 500. An inserted
+    // row returns its id; a duplicate returns no rows.
+    const { rows: inserted } = await pool.query(
+      `INSERT INTO waitlist (email, ip_hash, source)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (email) DO NOTHING
+       RETURNING id`,
       [email, ipHash, source]
     );
+
+    if (inserted.length === 0) {
+      return res.json({ success: true, message: "you're already on the list." });
+    }
 
     // ── Running total ────────────────────────────────────────────────────────
     const { rows: [{ n: total }] } = await pool.query(
@@ -61,7 +60,8 @@ router.post('/', waitlistLimiter, validateEmail, async (req, res) => {
 
 // ── Resend: add contact to audience ──────────────────────────────────────────
 async function addToAudience(email) {
-  if (!process.env.RESEND_API_KEY || !process.env.RESEND_AUDIENCE_ID) return;
+  const resend = getResend();
+  if (!resend || !process.env.RESEND_AUDIENCE_ID) return;
   await resend.contacts.create({
     audienceId:   process.env.RESEND_AUDIENCE_ID,
     email,
@@ -71,7 +71,8 @@ async function addToAudience(email) {
 
 // ── Resend: notify on new signup ──────────────────────────────────────────────
 async function sendNotification(email, total) {
-  if (!process.env.RESEND_API_KEY || !process.env.NOTIFY_PERSONAL_EMAIL) return;
+  const resend = getResend();
+  if (!resend || !process.env.NOTIFY_PERSONAL_EMAIL) return;
   const ts = new Date().toUTCString();
   await resend.emails.send({
     from:    'inquiries@velocit.ee',
