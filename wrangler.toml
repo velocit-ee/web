@@ -7,14 +7,17 @@
 #                RESEND_API_KEY, RESEND_AUDIENCE_ID, NOTIFY_PERSONAL_EMAIL,
 #                TURNSTILE_SECRET_KEY when enabling each feature)
 #
-# The production custom domain (velocit.ee) is attached at cutover — until
-# then this serves on the workers.dev staging URL only.
-
 name = "velocitee-web"
 main = "worker/index.js"
 compatibility_date = "2026-07-01"
 account_id = "af125b9e82852f1bd4a9679ec0184783"
 workers_dev = true
+
+# Production: custom domains replace the old VM+tunnel DNS records at deploy.
+routes = [
+  { pattern = "velocit.ee", custom_domain = true },
+  { pattern = "www.velocit.ee", custom_domain = true },
+]
 
 [assets]
 directory = "./site/dist"

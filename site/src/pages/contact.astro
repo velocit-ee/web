@@ -1,6 +1,8 @@
 ---
 import Base from "../layouts/Base.astro";
 import Tile from "../components/Tile.astro";
+// Turnstile runs interaction-only: invisible unless a challenge is required.
+const TURNSTILE_SITEKEY = "0x4AAAAAAD5Q5U7ZHfX3NY2L";
 ---
 <Base title="contact — velocit.ee" description="Get in touch with velocit.ee — questions, partnerships, nonprofit pricing, security disclosures.">
   <section>
@@ -63,6 +65,12 @@ import Tile from "../components/Tile.astro";
           <span>website</span>
           <input name="website" type="text" tabindex="-1" autocomplete="off" />
         </label>
+        <div
+          class="cf-turnstile"
+          data-sitekey={TURNSTILE_SITEKEY}
+          data-appearance="interaction-only"
+          data-theme="dark"
+        ></div>
         <div class="flex flex-wrap items-center gap-4 pt-1">
           <button
             type="submit"
@@ -107,6 +115,7 @@ import Tile from "../components/Tile.astro";
     </div>
   </section>
 
+  <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script is:inline>
     (function () {
       var form = document.getElementById("contact-form");
@@ -116,6 +125,8 @@ import Tile from "../components/Tile.astro";
         ev.preventDefault();
         var btn = form.querySelector("button[type=submit]");
         var data = Object.fromEntries(new FormData(form).entries());
+        data.turnstileToken = data["cf-turnstile-response"] || "";
+        delete data["cf-turnstile-response"];
         msg.innerHTML = '<span style="color:#5e7055">&gt; </span>sending …';
         btn.disabled = true;
         try {
@@ -130,6 +141,7 @@ import Tile from "../components/Tile.astro";
             form.reset();
           } else {
             msg.innerHTML = '<span style="color:#a85a5a">✕  </span>' + (body.message || "something went wrong.");
+            if (window.turnstile) window.turnstile.reset();
           }
         } catch (err) {
           msg.innerHTML = '<span style="color:#a85a5a">✕  </span>network error. try again, or email inquiries@velocit.ee.';

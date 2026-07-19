@@ -210,7 +210,14 @@ async function handleAdmin(env) {
     "SELECT email, created_at FROM waitlist ORDER BY created_at DESC"
   ).all();
   return new Response(renderAdminPage(results), {
-    headers: { "content-type": "text/html; charset=utf-8" },
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "content-security-policy":
+        "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "cache-control": "no-store",
+    },
   });
 }
 
