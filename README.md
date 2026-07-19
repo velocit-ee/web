@@ -3,10 +3,12 @@
 The velocit.ee marketing site and waitlist backend.
 
 ```
-status:   live at velocit.ee
-frontend: Astro 4 + Tailwind (./site)
-backend:  Express on Node 22 (./)
-license:  MIT (site config); content under Apache 2.0
+status:    live at velocit.ee (Cloudflare Worker + D1)
+frontend:  Astro 7 + Tailwind 3 (./site)
+backend:   Cloudflare Worker + D1 (./worker)
+local dev: Express on Node 22 (./server.js) still works for offline hacking
+license:   MIT
+staging:   https://velocitee-web.finley-karras.workers.dev
 ```
 
 ---
@@ -91,39 +93,65 @@ npm run site:dev        # http://127.0.0.1:4321 — live reload
 
 ---
 
-## Deployment
+## Deployment — Cloudflare Workers (target platform)
 
-Production runs on a dedicated Proxmox VM (Ubuntu 24.04, PM2 + systemd,
-Cloudflare Tunnel). Provisioning is fully scripted:
+The site is a single Worker: the Astro build is served from the static
+assets binding at the edge; `/api/*`, `/health`, and `/admin` run the
+handler in `worker/index.js`. The waitlist lives in D1 (region EEUR).
+Rate limiting is D1-backed (same windows as the old Express middleware);
+Turnstile verification activates when `TURNSTILE_SECRET_KEY` is set.
 
 ```bash
-# on the VM, as root
-CLOUDFLARE_TUNNEL_TOKEN=<token> bash setup.sh
+npm run build                                                  # Astro → site/dist
+npx wrangler d1 execute velocitee --remote --file worker/schema.sql   # once / idempotent
+npx wrangler deploy                                            # → workers.dev (staging)
 ```
 
-`setup.sh` is idempotent — safe to re-run after a code change. It:
+Secrets (set once per environment via `npx wrangler secret put <NAME>`):
+`IP_HASH_SALT`, `ADMIN_USER`, `ADMIN_TOKEN`, `RESEND_API_KEY`,
+`RESEND_AUDIENCE_ID`, `NOTIFY_PERSONAL_EMAIL`, `TURNSTILE_SECRET_KEY`.
 
-1. Installs Node 22, PostgreSQL 16, NGINX, fail2ban, UFW, cloudflared.
-2. Creates the runtime user and clones the repo.
-3. Runs `npm ci --omit=dev` for the Express runtime.
-4. Runs `cd site && npm install && npm run build` to generate `site/dist`.
-5. Applies the database schema.
-6. Configures UFW (deny-all-inbound except SSH from the management VLAN).
-7. Starts PM2 and registers it with systemd.
-8. Boots the Cloudflare Tunnel.
+Admin auth is HTTP Basic against `ADMIN_USER`/`ADMIN_TOKEN` (a long random
+token, compared constant-time). At production cutover, put Cloudflare
+Access in front of `/admin` as the primary gate.
+
+**Production cutover status** (2026-07-19):
+1. ~~Turnstile widget for velocit.ee; secret set; widget wired into the two forms~~ done
+2. ~~Production secrets (`IP_HASH_SALT`, `ADMIN_USER`/`ADMIN_TOKEN`)~~ done —
+   `RESEND_API_KEY` still pending (contact form returns 503 until set)
+3. ~~Attach `velocit.ee` + `www.velocit.ee` custom domains~~ declared in
+   `wrangler.toml` (`routes`), applied by `npx wrangler deploy`
+4. Final export of the VM's waitlist → import into D1 (VM DB is frozen
+   after cutover, so this can happen any time before decommission)
+5. ~~Access policy for `/admin`~~ replaced by in-worker failed-attempt
+   lockout (Zero Trust needs billing setup; revisit if that changes)
+6. Decommission: revoke tunnel token, archive an encrypted final DB dump,
+   retire the VM
+
+## Deployment — legacy VM (retired at cutover)
+
+The previous production ran on a dedicated Proxmox VM (Ubuntu 24.04,
+PM2 + systemd, PostgreSQL 16, Cloudflare Tunnel) provisioned by
+`setup.sh`. That path is retired; `setup.sh` and `server.js` remain for
+local/offline development only.
 
 ---
 
 ## Security
 
-- `helmet` with a tight CSP — no third-party origins, self-hosted fonts.
-- Rate limits — 3/15min on `/api/waitlist`, 2/hr on `/api/contact`.
+- Tight CSP via `site/public/_headers` (served by the assets binding) —
+  self-hosted fonts; the only external origin is
+  `challenges.cloudflare.com` for Turnstile.
+- Turnstile (managed, interaction-only) on the waitlist + contact forms;
+  the Worker verifies tokens server-side when `TURNSTILE_SECRET_KEY` is set.
+- Rate limits — 3/15min on `/api/waitlist`, 2/hr on `/api/contact`,
+  D1-backed so they survive deploys.
 - IPs are HMAC-SHA-256-hashed before storage; raw IPs never hit disk.
-- Admin password is bcrypt cost 12.
-- `app.set('trust proxy', 1)` so we read the real client IP from the
-  Cloudflare `CF-Connecting-IP` header instead of `127.0.0.1`.
-- UFW blocks all inbound except SSH from the management VLAN.
-- Cloudflare Tunnel terminates publicly; no ports are open on the VM.
+- Admin is HTTP Basic against `ADMIN_USER`/`ADMIN_TOKEN` secrets
+  (constant-time compare), with a failed-attempt lockout: 10 wrong
+  guesses per IP in 15 minutes returns 429. Cloudflare Access would be a
+  nice extra layer but requires Zero Trust billing setup.
+- No origin server: the Worker and D1 are the whole production surface.
 
 See [BRAND.md](https://github.com/velocit-ee/.github/blob/main/profile/BRAND.md)
 for design and tone standards.

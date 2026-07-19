@@ -1,0 +1,36 @@
+# velocit.ee — Cloudflare Worker configuration
+#
+# Deploy:        npx wrangler deploy            (builds nothing — site/dist must exist)
+# Full pipeline: npm run build && npx wrangler deploy
+# D1 schema:     npx wrangler d1 execute velocitee --remote --file worker/schema.sql
+# Secrets:       npx wrangler secret put IP_HASH_SALT   (and ADMIN_USER, ADMIN_TOKEN,
+#                RESEND_API_KEY, RESEND_AUDIENCE_ID, NOTIFY_PERSONAL_EMAIL,
+#                TURNSTILE_SECRET_KEY when enabling each feature)
+#
+name = "velocitee-web"
+main = "worker/index.js"
+compatibility_date = "2026-07-01"
+account_id = "af125b9e82852f1bd4a9679ec0184783"
+workers_dev = true
+
+# Production: custom domains replace the old VM+tunnel DNS records at deploy.
+routes = [
+  { pattern = "velocit.ee", custom_domain = true },
+  { pattern = "www.velocit.ee", custom_domain = true },
+]
+
+[assets]
+directory = "./site/dist"
+binding = "ASSETS"
+not_found_handling = "404-page"
+# Only these paths run the Worker; every other request is served straight
+# from the static assets at the edge without invoking us at all.
+run_worker_first = ["/api/*", "/admin", "/admin/*", "/health"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "velocitee"
+database_id = "dbb2ad09-f76b-46fc-b130-19fffa1fca1e"
+
+[observability]
+enabled = true

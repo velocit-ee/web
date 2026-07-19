@@ -1,6 +1,8 @@
 ---
-// Waitlist signup. POSTs to /api/waitlist on the same origin (Express handles).
+// Waitlist signup. POSTs to /api/waitlist on the same origin.
 // All client logic is inline — no framework runtime needed.
+// Turnstile runs interaction-only: invisible unless a challenge is required.
+const TURNSTILE_SITEKEY = "0x4AAAAAAD5Q5U7ZHfX3NY2L";
 ---
 <form
   id="wl-form"
@@ -25,6 +27,12 @@
   >
     join waitlist
   </button>
+  <div
+    class="cf-turnstile basis-full"
+    data-sitekey={TURNSTILE_SITEKEY}
+    data-appearance="interaction-only"
+    data-theme="dark"
+  ></div>
   <p id="wl-msg"
      class="basis-full text-xs font-mono mt-1 text-muted"
      role="status"
@@ -32,6 +40,15 @@
     <span class="text-dim">&gt; </span>no spam, ever. unsubscribe one-click.
   </p>
 </form>
+<script is:inline>
+  // Load the Turnstile script once, no matter how many forms are on the page.
+  if (!document.querySelector('script[src^="https://challenges.cloudflare.com/turnstile"]')) {
+    var ts = document.createElement("script");
+    ts.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    ts.async = true; ts.defer = true;
+    document.head.appendChild(ts);
+  }
+</script>
 <script is:inline>
   (function () {
     var form = document.getElementById("wl-form");
@@ -44,10 +61,11 @@
       msg.innerHTML = '<span style="color:#5e7055">&gt; </span>sending …';
       btn.disabled = true;
       try {
+        var tsInput = form.querySelector('[name="cf-turnstile-response"]');
         var r = await fetch("/api/waitlist", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email }),
+          body: JSON.stringify({ email: email, turnstileToken: tsInput ? tsInput.value : "" }),
         });
         var data = await r.json().catch(function () { return {}; });
         if (r.ok && data.success) {
@@ -55,6 +73,7 @@
           form.reset();
         } else {
           msg.innerHTML = '<span style="color:#a85a5a">✕  </span>' + (data.message || "something went wrong. try again.");
+          if (window.turnstile) window.turnstile.reset();
         }
       } catch (err) {
         msg.innerHTML = '<span style="color:#a85a5a">✕  </span>network error. try again.';

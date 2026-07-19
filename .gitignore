@@ -10,6 +10,9 @@ site/dist/
 site/.astro/
 site/node_modules/
 
+# Wrangler local state (machine-local caches; secrets live in Cloudflare)
+.wrangler/
+
 # Operator scratch
 .venv/
 *.swp

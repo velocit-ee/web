@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-const lastUpdated = "2026-04-28";
+const lastUpdated = "2026-07-19";
 ---
 <Base title="privacy — velocit.ee" description="Privacy notice for velocit.ee. What we collect, what we don't, and how to ask us to forget you.">
   <article>
@@ -17,8 +17,9 @@ const lastUpdated = "2026-04-28";
         </p>
         <ul>
           <li>
-            <strong>Waitlist email addresses</strong>, when you give them to us. Stored in our own
-            PostgreSQL database. Used to email you when we have something relevant to share.
+            <strong>Waitlist email addresses</strong>, when you give them to us. Stored in a
+            Cloudflare D1 database located in the EU. Used to email you when we have something
+            relevant to share.
           </li>
           <li>
             <strong>Contact form submissions</strong> — the message contents you send, plus your
@@ -36,15 +37,16 @@ const lastUpdated = "2026-04-28";
 
         <h2>What we don’t collect</h2>
         <p>
-          No analytics. No third-party scripts. No tracking pixels. No advertising IDs. We don't
-          fingerprint visitors, we don't sell mailing lists, and we don't share data with anyone
-          we haven't told you about below.
+          No analytics. No tracking pixels. No advertising IDs. We don't fingerprint visitors,
+          we don't sell mailing lists, and we don't share data with anyone we haven't told you
+          about below. The only third-party script on this site is Cloudflare Turnstile, loaded
+          on pages with forms to keep bots out — it does not track you across sites.
         </p>
 
         <h2>Who we share data with</h2>
         <ul>
           <li><strong>Resend</strong> — for sending email (waitlist updates, contact form replies, transactional notifications).</li>
-          <li><strong>Cloudflare</strong> — provides the tunnel that exposes velocit.ee publicly. They process request metadata as a CDN.</li>
+          <li><strong>Cloudflare</strong> — hosts this site and its database (Cloudflare Workers + D1) and provides the Turnstile spam protection on our forms. They process request metadata to serve and secure the site.</li>
         </ul>
         <p>That's it. No analytics providers, no ad networks, no third-party "consent management".</p>
 
