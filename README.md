@@ -3,10 +3,12 @@
 The velocit.ee marketing site and waitlist backend.
 
 ```
-status:   live at velocit.ee
-frontend: Astro 4 + Tailwind (./site)
-backend:  Express on Node 22 (./)
-license:  MIT (site config); content under Apache 2.0
+status:    live at velocit.ee (VM + tunnel) · staging on Cloudflare Workers
+frontend:  Astro 7 + Tailwind 3 (./site)
+backend:   Cloudflare Worker + D1 (./worker) — replaces Express at cutover
+local dev: Express on Node 22 (./server.js) still works for offline hacking
+license:   MIT
+staging:   https://velocitee-web.finley-karras.workers.dev
 ```
 
 ---
@@ -91,26 +93,53 @@ npm run site:dev        # http://127.0.0.1:4321 — live reload
 
 ---
 
-## Deployment
+## Deployment — Cloudflare Workers (target platform)
 
-Production runs on a dedicated Proxmox VM (Ubuntu 24.04, PM2 + systemd,
-Cloudflare Tunnel). Provisioning is fully scripted:
+The site is a single Worker: the Astro build is served from the static
+assets binding at the edge; `/api/*`, `/health`, and `/admin` run the
+handler in `worker/index.js`. The waitlist lives in D1 (region EEUR).
+Rate limiting is D1-backed (same windows as the old Express middleware);
+Turnstile verification activates when `TURNSTILE_SECRET_KEY` is set.
+
+```bash
+npm run build                                                  # Astro → site/dist
+npx wrangler d1 execute velocitee --remote --file worker/schema.sql   # once / idempotent
+npx wrangler deploy                                            # → workers.dev (staging)
+```
+
+Secrets (set once per environment via `npx wrangler secret put <NAME>`):
+`IP_HASH_SALT`, `ADMIN_USER`, `ADMIN_TOKEN`, `RESEND_API_KEY`,
+`RESEND_AUDIENCE_ID`, `NOTIFY_PERSONAL_EMAIL`, `TURNSTILE_SECRET_KEY`.
+
+Admin auth is HTTP Basic against `ADMIN_USER`/`ADMIN_TOKEN` (a long random
+token, compared constant-time). At production cutover, put Cloudflare
+Access in front of `/admin` as the primary gate.
+
+**Production cutover checklist** (not yet executed):
+1. Final `pg_dump` of the VM's waitlist → CSV → import into D1.
+2. Set production secrets (real Resend key, prod `IP_HASH_SALT`).
+3. Enable Zero Trust and add an Access policy for `/admin`.
+4. Create a Turnstile widget for velocit.ee; set the secret; wire the
+   widget into the two forms.
+5. Attach the `velocit.ee` custom domain to the Worker; remove the tunnel
+   ingress. Watch for a day.
+6. Decommission: revoke tunnel token, archive an encrypted final DB dump,
+   retire the VM. Update the privacy notice (hosting = Cloudflare).
+
+## Deployment — legacy VM (current production until cutover)
+
+Production still runs on a dedicated Proxmox VM (Ubuntu 24.04, PM2 +
+systemd, Cloudflare Tunnel) provisioned by `setup.sh`:
 
 ```bash
 # on the VM, as root
 CLOUDFLARE_TUNNEL_TOKEN=<token> bash setup.sh
 ```
 
-`setup.sh` is idempotent — safe to re-run after a code change. It:
-
-1. Installs Node 22, PostgreSQL 16, NGINX, fail2ban, UFW, cloudflared.
-2. Creates the runtime user and clones the repo.
-3. Runs `npm ci --omit=dev` for the Express runtime.
-4. Runs `cd site && npm install && npm run build` to generate `site/dist`.
-5. Applies the database schema.
-6. Configures UFW (deny-all-inbound except SSH from the management VLAN).
-7. Starts PM2 and registers it with systemd.
-8. Boots the Cloudflare Tunnel.
+`setup.sh` is idempotent — safe to re-run after a code change. It installs
+Node 22 + PostgreSQL 16 + PM2 + cloudflared, builds the site, applies the
+schema, configures UFW/fail2ban, and boots the tunnel. This path is
+retired at cutover step 6.
 
 ---
 

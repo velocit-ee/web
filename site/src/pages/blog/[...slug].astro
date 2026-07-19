@@ -1,15 +1,16 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  // Content-layer entries: `id` is the slug (was `post.slug` pre-Astro 5).
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 
 interface Props { post: CollectionEntry<"blog">; }
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 
 function fmt(d: Date) {
   return d.toISOString().slice(0, 10);
