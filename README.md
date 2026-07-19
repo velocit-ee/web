@@ -123,7 +123,8 @@ Access in front of `/admin` as the primary gate.
    `wrangler.toml` (`routes`), applied by `npx wrangler deploy`
 4. Final export of the VM's waitlist → import into D1 (VM DB is frozen
    after cutover, so this can happen any time before decommission)
-5. Enable Zero Trust and add an Access policy for `/admin`
+5. ~~Access policy for `/admin`~~ replaced by in-worker failed-attempt
+   lockout (Zero Trust needs billing setup; revisit if that changes)
 6. Decommission: revoke tunnel token, archive an encrypted final DB dump,
    retire the VM
 
@@ -147,8 +148,9 @@ local/offline development only.
   D1-backed so they survive deploys.
 - IPs are HMAC-SHA-256-hashed before storage; raw IPs never hit disk.
 - Admin is HTTP Basic against `ADMIN_USER`/`ADMIN_TOKEN` secrets
-  (constant-time compare); Cloudflare Access in front of `/admin` is the
-  next hardening step.
+  (constant-time compare), with a failed-attempt lockout: 10 wrong
+  guesses per IP in 15 minutes returns 429. Cloudflare Access would be a
+  nice extra layer but requires Zero Trust billing setup.
 - No origin server: the Worker and D1 are the whole production surface.
 
 See [BRAND.md](https://github.com/velocit-ee/.github/blob/main/profile/BRAND.md)

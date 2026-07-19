@@ -16,8 +16,11 @@ import { renderAdminPage } from "./admin-page.js";
 
 // ── Rate limits (identical windows to the Express deployment) ────────────────
 const LIMITS = {
-  waitlist: { max: 3, windowSeconds: 15 * 60 },
-  contact:  { max: 2, windowSeconds: 60 * 60 },
+  waitlist:  { max: 3, windowSeconds: 15 * 60 },
+  contact:   { max: 2, windowSeconds: 60 * 60 },
+  // Counts only *failed* basic-auth attempts — brute-force lockout in lieu
+  // of a Cloudflare Access layer.
+  adminAuth: { max: 10, windowSeconds: 15 * 60 },
 };
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
@@ -177,6 +180,12 @@ async function withAdminAuth(request, env, handler) {
     console.error("[auth] ADMIN_USER or ADMIN_TOKEN secret not configured");
     return new Response("auth not configured", { status: 500 });
   }
+
+  const ipHash = await hashIP(clientIP(request), env);
+  if (await authLockedOut(env, ipHash)) {
+    return new Response("too many failed login attempts. try again in 15 minutes.", { status: 429 });
+  }
+
   const header = request.headers.get("authorization") || "";
   if (!header.startsWith("Basic ")) return challenge();
 
@@ -193,9 +202,29 @@ async function withAdminAuth(request, env, handler) {
 
   const okUser = await timingSafeEqual(user, env.ADMIN_USER);
   const okPass = await timingSafeEqual(pass, env.ADMIN_TOKEN);
-  if (!(okUser && okPass)) return challenge();
+  if (!(okUser && okPass)) {
+    await recordAuthFailure(env, ipHash);
+    return challenge();
+  }
 
   return handler(env);
+}
+
+// Failed-attempt lockout for /admin. Unlike rateLimited(), only failures
+// count — a logged-in admin refreshing the dashboard costs nothing.
+async function authLockedOut(env, ipHash) {
+  const { max, windowSeconds } = LIMITS.adminAuth;
+  const cutoff = Math.floor(Date.now() / 1000) - windowSeconds;
+  const { n } = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM rate_events WHERE scope = 'admin_auth' AND ip_hash = ?1 AND ts > ?2"
+  ).bind(ipHash, cutoff).first();
+  return n >= max;
+}
+
+async function recordAuthFailure(env, ipHash) {
+  await env.DB.prepare(
+    "INSERT INTO rate_events (scope, ip_hash, ts) VALUES ('admin_auth', ?1, ?2)"
+  ).bind(ipHash, Math.floor(Date.now() / 1000)).run();
 }
 
 function challenge() {
