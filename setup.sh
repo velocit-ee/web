@@ -19,7 +19,7 @@ APP_DIR="/home/${APP_USER}/velocitee"
 REPO_URL="${REPO_URL:-https://github.com/YOUR_USERNAME/velocitee.git}"
 NODE_MAJOR="22"
 PG_VERSION="16"
-MGMT_CIDR="192.168.1.0/24"   # management subnet — override via MGMT_CIDR env var
+MGMT_CIDR="${MGMT_CIDR:-192.168.1.0/24}"   # management subnet — override via MGMT_CIDR env var
 
 # ── Colours ───────────────────────────────────────────────────────────────────
 GRN='\033[0;32m' YLW='\033[1;33m' RED='\033[0;31m' NC='\033[0m'
