@@ -74,7 +74,11 @@ import Tile from "../components/Tile.astro";
             <span class="text-dim">&gt; </span>plaintext only — no tracking, no GDPR small print to fight.
           </p>
         </div>
-      </form>
+        <label class="flex items-start gap-2 text-xs text-muted mt-2 cursor-pointer">
+    <input type="checkbox" name="consent" required class="mt-0.5 w-4 h-4 rounded border-border bg-surface text-blue focus:ring-blue cursor-pointer" />
+    <span>I consent to the collection of this data and agree to the <a href="/legal/privacy" class="text-blue hover:underline">Privacy Policy</a>.</span>
+  </label>
+</form>
 
       <aside class="space-y-5">
         <Tile title="general inquiries" status="ok">

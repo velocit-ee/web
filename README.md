@@ -1,4 +1,4 @@
-# velocit-ee/web
+# Velocitee Vector Marketing Site
 
 The velocit.ee marketing site and waitlist backend.
 
