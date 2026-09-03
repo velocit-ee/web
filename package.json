@@ -8,7 +8,7 @@
     "dev": "node --watch server.js",
     "site:dev": "cd site && npm run dev",
     "site:install": "cd site && npm install",
-    "site:build": "cd site && npm run build",
+    "site:build": "cd site && npm run build && npx wrangler pages functions build --outdir=dist/_worker.js/",
     "build": "npm run site:install && npm run site:build",
     "postinstall": "echo 'Run `npm run build` to install + build the Astro site.'"
   },
@@ -16,5 +16,8 @@
     "node": ">=22.0.0"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "wrangler": "^3.111.0"
+  }
 }
